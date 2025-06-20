@@ -32,14 +32,6 @@ const Navbar = () => {
             <Link to="/services" className="text-gray-800 hover:text-intell-blue transition-colors">Services</Link>
             <Link to="/booking" className="text-gray-800 hover:text-intell-blue transition-colors">Book Session</Link>
             <Link to="/contact" className="text-gray-800 hover:text-intell-blue transition-colors">Contact</Link>
-            <div className="ml-4 flex space-x-2">
-              <Button variant="outline" asChild>
-                <Link to="/login">Login</Link>
-              </Button>
-              <Button asChild className="bg-intell-blue hover:bg-blue-700">
-                <Link to="/register">Register</Link>
-              </Button>
-            </div>
           </div>
           
           <div className="md:hidden">
@@ -86,14 +78,6 @@ const Navbar = () => {
             >
               Contact
             </Link>
-            <div className="pt-2 flex flex-col space-y-2">
-              <Button variant="outline" asChild className="justify-center">
-                <Link to="/login" onClick={() => setIsOpen(false)}>Login</Link>
-              </Button>
-              <Button asChild className="bg-intell-blue hover:bg-blue-700 justify-center">
-                <Link to="/register" onClick={() => setIsOpen(false)}>Register</Link>
-              </Button>
-            </div>
           </div>
         )}
         
