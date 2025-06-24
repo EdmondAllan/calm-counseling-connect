@@ -1,75 +1,115 @@
-
-import { Link } from "react-router-dom";
+import React, { useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
+import { Facebook, Youtube } from 'lucide-react';
+import './Footer.css';
 
 const Footer = () => {
-  const currentYear = new Date().getFullYear();
+  const ctaRef = useRef(null);
+  const contentRef = useRef(null);
+
+  useEffect(() => {
+    const observerCallback = (entries: IntersectionObserverEntry[], observer: IntersectionObserver) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    };
+
+    const observer = new IntersectionObserver(observerCallback, {
+      root: null,
+      rootMargin: '0px',
+      threshold: 0.1
+    });
+
+    const { current: currentCta } = ctaRef;
+    const { current: currentContent } = contentRef;
+
+    if (currentCta) {
+      observer.observe(currentCta);
+    }
+    if (currentContent) {
+      observer.observe(currentContent);
+    }
+
+    return () => {
+      if (currentCta) {
+        observer.unobserve(currentCta);
+      }
+      if (currentContent) {
+        observer.unobserve(currentContent);
+      }
+    };
+  }, []);
 
   return (
-    <footer className="bg-gray-900 text-white">
-      <div className="container mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div>
-            <h3 className="text-xl font-semibold mb-4">Intell Counselling</h3>
-            <p className="text-gray-300 mb-4">
-              Extending a compassionate hand to guide you through life's journey, offering a spectrum of transformative services.
-            </p>
-            <div className="flex space-x-4">
-              <a href="#" className="text-white hover:text-intell-blue transition-colors">
-                <span className="sr-only">Facebook</span>
-                <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                  <path fillRule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" clipRule="evenodd" />
-                </svg>
+    <footer id="main-footer">
+      {/* Call-to-Action Strip */}
+      <div className="footer-cta-strip" ref={ctaRef}>
+        <h2>Ready to Begin Your Journey to Well-being?</h2>
+        <p>Schedule a session with our experienced counselor and take the first step towards a healthier, happier you.</p>
+        <Link to="/booking" className="btn btn-primary">Book Your Session Now</Link>
+      </div>
+
+      {/* Main Footer Content */}
+      <div className="footer-content" ref={contentRef}>
+        <div className="footer-content-columns">
+          {/* Column 1: About */}
+          <div className="footer-col footer-col-about">
+            <div className="logo-text">Intell Counselling</div>
+            <p>Extending a compassionate hand to guide you through life's journey, offering a spectrum of transformative services.</p>
+            <div className="social-links">
+              <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+                <Facebook size={28} />
               </a>
-              <a href="#" className="text-white hover:text-intell-blue transition-colors">
-                <span className="sr-only">YouTube</span>
-                <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z" />
-                </svg>
+              <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
+                <Youtube size={28} />
               </a>
             </div>
           </div>
-          
-          <div>
-            <h3 className="text-xl font-semibold mb-4">Quick Links</h3>
-            <ul className="space-y-2">
-              <li>
-                <Link to="/" className="text-gray-300 hover:text-white transition-colors">Home</Link>
-              </li>
-              <li>
-                <Link to="/about" className="text-gray-300 hover:text-white transition-colors">About Us</Link>
-              </li>
-              <li>
-                <Link to="/services" className="text-gray-300 hover:text-white transition-colors">Services</Link>
-              </li>
-              <li>
-                <Link to="/booking" className="text-gray-300 hover:text-white transition-colors">Book a Session</Link>
-              </li>
-              <li>
-                <Link to="/contact" className="text-gray-300 hover:text-white transition-colors">Contact</Link>
-              </li>
+
+          {/* Column 2: Quick Links */}
+          <div className="footer-col footer-col-links">
+            <h3>Quick Links</h3>
+            <ul>
+              <li><Link to="/">Home</Link></li>
+              <li><Link to="/about">About Us</Link></li>
+              <li><Link to="/services">Services</Link></li>
+              <li><Link to="/booking">Book a Session</Link></li>
+              <li><Link to="/contact">Contact</Link></li>
+            </ul>
+          </div>
+
+          {/* Column 3: Contact Info */}
+          <div className="footer-col footer-col-contact">
+            <h3>Contact Information</h3>
+            <ul>
+              <li>Phone: +91 9486991505</li>
+              <li>Email: info@intellcounselling.com</li>
+              <li>Location: Chennai, Tamil Nadu, India</li>
             </ul>
           </div>
           
-          <div>
-            <h3 className="text-xl font-semibold mb-4">Contact Information</h3>
-            <p className="text-gray-300 mb-2">
-              <span className="font-semibold">Phone:</span> +91 9486991505
-            </p>
-            <p className="text-gray-300 mb-2">
-              <span className="font-semibold">Email:</span> info@intellcounselling.com
-            </p>
-            <p className="text-gray-300 mb-4">
-              <span className="font-semibold">Location:</span> Chennai, Tamil Nadu, India
-            </p>
+          {/* Column 4: Office Hours (Example - content not specified but included for structure) */}
+          <div className="footer-col footer-col-hours">
+              <h3>Office Hours</h3>
+              <ul>
+                  <li>Monday - Friday: 9:00 AM - 6:00 PM</li>
+                  <li>Saturday: 10:00 AM - 4:00 PM</li>
+                  <li>Sunday: Closed</li>
+              </ul>
           </div>
+
         </div>
-        
-        <div className="border-t border-gray-700 mt-8 pt-8 text-sm text-gray-400 text-center">
-          <p>&copy; {currentYear} IntellCounselling. All Rights Reserved.</p>
-          <div className="mt-2 space-x-4">
-            <Link to="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link>
-            <Link to="/terms" className="hover:text-white transition-colors">Terms of Service</Link>
-          </div>
+      </div>
+
+      {/* Bottom Copyright Bar */}
+      <div className="footer-bottom-bar">
+        <p>© 2025 Intell Counselling. All Rights Reserved.</p>
+        <div className="legal-links">
+          <Link to="/privacy">Privacy Policy</Link>
+          <Link to="/terms">Terms of Service</Link>
         </div>
       </div>
     </footer>

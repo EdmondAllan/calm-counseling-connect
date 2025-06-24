@@ -1,4 +1,3 @@
-
 import type { Config } from "tailwindcss";
 
 export default {
@@ -94,11 +93,27 @@ export default {
             transform: "translateY(0)",
           },
         },
+        marquee: {
+          from: { transform: "translateX(0)" },
+          to: { transform: "translateX(-50%)" },
+        },
+        "tick-in": {
+          "0%": {
+            opacity: "0",
+            transform: "scale(0.5) translateY(10px)",
+          },
+          "100%": {
+            opacity: "1",
+            transform: "scale(1) translateY(0)",
+          },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "fade-in": "fade-in 0.5s ease-out",
+        marquee: "marquee 40s linear infinite",
+        "tick-in": "tick-in 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
       },
     },
   },

@@ -1,90 +1,101 @@
-
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { Menu, X } from "lucide-react";
+import { NavLink } from "react-router-dom";
+import { motion, AnimatePresence, Variants } from "framer-motion";
+import { useAuth } from "@/hooks/useAuth";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const { user, logout, isAuthenticated } = useAuth();
 
-  const toggleMenu = () => {
-    setIsOpen(!isOpen);
+  const navLinks = [
+    { to: "/", text: "Home" },
+    { to: "/about", text: "About Us" },
+    { to: "/services", text: "Services" },
+    { to: "/booking", text: "Book Session" },
+    { to: "/contact", text: "Contact" },
+  ];
+
+  const mobileMenuVariants: Variants = {
+    hidden: {
+      opacity: 0,
+      y: "-100%",
+      transition: { type: "tween", duration: 0.3, ease: "easeInOut" },
+    },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { type: "tween", duration: 0.3, ease: "easeInOut" },
+    },
   };
+  
+  const linkStyle = "relative text-gray-800 font-medium py-2 transition-colors duration-300 group";
+  const activeLinkStyle = "text-blue-600";
 
   return (
-    <nav className="bg-intell-lightblue py-4">
+    <nav className="bg-white shadow-sm sticky top-0 z-50">
       <div className="container mx-auto px-4">
-        <div className="flex justify-between items-center">
-          <Link to="/" className="flex items-center">
+        <div className="flex justify-between items-center h-20">
+          <NavLink to="/" className="flex items-center flex-shrink-0">
             <img
-              src="/logo.svg"
+              src="/intellcounsellinglogoforweb.png"
               alt="Intell Counselling Logo"
-              className="h-10 w-auto"
-              onError={(e) => {
-                e.currentTarget.src = "https://via.placeholder.com/160x50?text=Intell+Counselling";
-              }}
+              className="h-12 w-auto"
             />
-          </Link>
+          </NavLink>
+
+          <ul className="hidden lg:flex items-center space-x-8">
+            {navLinks.map((link) => (
+              <li key={link.to}>
+                <NavLink
+                  to={link.to}
+                  className={({ isActive }) =>
+                    `${linkStyle} ${isActive ? activeLinkStyle : ""}`
+                  }
+                >
+                  {link.text}
+                  <span className="absolute bottom-0 left-0 w-full h-0.5 bg-blue-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-in-out origin-center"></span>
+                </NavLink>
+              </li>
+            ))}
+          </ul>
           
-          <div className="hidden md:flex items-center space-x-6">
-            <Link to="/" className="text-gray-800 hover:text-intell-blue transition-colors">Home</Link>
-            <Link to="/about" className="text-gray-800 hover:text-intell-blue transition-colors">About Us</Link>
-            <Link to="/services" className="text-gray-800 hover:text-intell-blue transition-colors">Services</Link>
-            <Link to="/booking" className="text-gray-800 hover:text-intell-blue transition-colors">Book Session</Link>
-            <Link to="/contact" className="text-gray-800 hover:text-intell-blue transition-colors">Contact</Link>
+          <div className="lg:hidden">
+            <button onClick={() => setIsOpen(!isOpen)} className="z-50 relative w-8 h-8 text-gray-800">
+              <span className={`block w-full h-0.5 bg-current transform transition duration-300 ease-in-out ${isOpen ? 'rotate-45 translate-y-2' : ''}`}></span>
+              <span className={`block w-full h-0.5 bg-current mt-1.5 transform transition duration-300 ease-in-out ${isOpen ? 'opacity-0' : ''}`}></span>
+              <span className={`block w-full h-0.5 bg-current mt-1.5 transform transition duration-300 ease-in-out ${isOpen ? '-rotate-45 -translate-y-2' : ''}`}></span>
+            </button>
           </div>
-          
-          <div className="md:hidden">
-            <Button variant="ghost" onClick={toggleMenu} aria-label="Menu">
-              {isOpen ? <X size={24} /> : <Menu size={24} />}
-            </Button>
-          </div>
-        </div>
-        
-        {isOpen && (
-          <div className="md:hidden mt-4 space-y-2 animate-fade-in">
-            <Link
-              to="/"
-              className="block py-2 px-4 text-gray-800 hover:bg-intell-blue hover:text-white rounded-md"
-              onClick={() => setIsOpen(false)}
-            >
-              Home
-            </Link>
-            <Link
-              to="/about"
-              className="block py-2 px-4 text-gray-800 hover:bg-intell-blue hover:text-white rounded-md"
-              onClick={() => setIsOpen(false)}
-            >
-              About Us
-            </Link>
-            <Link
-              to="/services"
-              className="block py-2 px-4 text-gray-800 hover:bg-intell-blue hover:text-white rounded-md"
-              onClick={() => setIsOpen(false)}
-            >
-              Services
-            </Link>
-            <Link
-              to="/booking"
-              className="block py-2 px-4 text-gray-800 hover:bg-intell-blue hover:text-white rounded-md"
-              onClick={() => setIsOpen(false)}
-            >
-              Book Session
-            </Link>
-            <Link
-              to="/contact"
-              className="block py-2 px-4 text-gray-800 hover:bg-intell-blue hover:text-white rounded-md"
-              onClick={() => setIsOpen(false)}
-            >
-              Contact
-            </Link>
-          </div>
-        )}
-        
-        <div className="hidden md:block text-right text-sm text-gray-600 mt-2">
-          <span>Phone No.: +91 9486991505</span>
         </div>
       </div>
+
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            className="lg:hidden absolute top-0 left-0 w-full bg-white/95 backdrop-blur-sm shadow-lg"
+            variants={mobileMenuVariants}
+            initial="hidden"
+            animate="visible"
+            exit="hidden"
+          >
+            <ul className="flex flex-col items-center justify-center h-screen space-y-8">
+              {navLinks.map((link) => (
+                <li key={link.to} onClick={() => setIsOpen(false)}>
+                  <NavLink
+                    to={link.to}
+                    className={({ isActive }) =>
+                      `text-2xl ${linkStyle} ${isActive ? activeLinkStyle : ""}`
+                    }
+                  >
+                    {link.text}
+                    <span className="absolute bottom-0 left-0 w-full h-0.5 bg-blue-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-in-out origin-center"></span>
+                  </NavLink>
+                </li>
+              ))}
+            </ul>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </nav>
   );
 };

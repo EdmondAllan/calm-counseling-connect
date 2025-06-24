@@ -1,8 +1,6 @@
-
 import Hero from "@/components/Hero";
 import Services from "@/components/Services";
 import FounderProfile from "@/components/FounderProfile";
-import BookingCTA from "@/components/BookingCTA";
 import Testimonials from "@/components/Testimonials";
 
 const Index = () => {
@@ -12,7 +10,6 @@ const Index = () => {
       <Services />
       <FounderProfile />
       <Testimonials />
-      <BookingCTA />
     </div>
   );
 };

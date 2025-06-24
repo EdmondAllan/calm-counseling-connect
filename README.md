@@ -1,73 +1,273 @@
-# Welcome to your Lovable project
+# Calm Counseling Connect
 
-## Project info
+A comprehensive counseling appointment booking system with React frontend and Node.js/Express backend.
 
-**URL**: https://lovable.dev/projects/aeb49d70-f993-41cc-a3a6-ed8e0ca39546
+## Features
 
-## How can I edit this code?
+- 🔐 User authentication (login/register)
+- 📅 Appointment booking and management
+- 👨‍⚕️ Counselor profiles and availability
+- 🛠️ Service management
+- 📱 Responsive design
+- 🎨 Modern UI with shadcn/ui components
+- 🔄 Real-time state management with Redux Toolkit
+- 🚀 API integration with RTK Query
 
-There are several ways of editing your application.
+## Tech Stack
 
-**Use Lovable**
+### Frontend
+- **React 18** with TypeScript
+- **Vite** for build tooling
+- **Redux Toolkit** for state management
+- **RTK Query** for API calls
+- **React Router** for navigation
+- **shadcn/ui** for UI components
+- **Tailwind CSS** for styling
+- **Sonner** for toast notifications
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/aeb49d70-f993-41cc-a3a6-ed8e0ca39546) and start prompting.
+### Backend
+- **Node.js** with TypeScript
+- **Express.js** framework
+- **MongoDB** with Mongoose
+- **JWT** for authentication
+- **bcryptjs** for password hashing
+- **CORS** for cross-origin requests
 
-Changes made via Lovable will be committed automatically to this repo.
+## Project Structure
 
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+```
+intellweb/
+├── backend/                 # Express.js backend
+│   ├── src/
+│   │   ├── config/         # Database configuration
+│   │   ├── controllers/    # Route controllers
+│   │   ├── middleware/     # Authentication middleware
+│   │   ├── models/         # MongoDB models
+│   │   ├── routes/         # API routes
+│   │   ├── utils/          # Utility functions
+│   │   └── server.ts       # Main server file
+│   └── package.json
+└── calm-counseling-connect/ # React frontend
+    ├── src/
+    │   ├── components/     # React components
+    │   ├── hooks/          # Custom hooks
+    │   ├── pages/          # Page components
+    │   ├── services/       # API services
+    │   ├── slices/         # Redux slices
+    │   ├── store.ts        # Redux store
+    │   └── main.tsx        # App entry point
+    └── package.json
 ```
 
-**Edit a file directly in GitHub**
+## Setup Instructions
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+### Prerequisites
 
-**Use GitHub Codespaces**
+- Node.js (v16 or higher)
+- npm or yarn
+- MongoDB (local or cloud)
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+### Backend Setup
 
-## What technologies are used for this project?
+1. **Navigate to the backend directory:**
+   ```bash
+   cd backend
+   ```
 
-This project is built with:
+2. **Install dependencies:**
+   ```bash
+   npm install
+   ```
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+3. **Create environment variables:**
+   Create a `.env` file in the backend directory:
+   ```env
+   PORT=8080
+   MONGODB_URI=mongodb://localhost:27017/counseling-app
+   JWT_SECRET=your-secret-key-here
+   NODE_ENV=development
+   ```
 
-## How can I deploy this project?
+4. **Start the development server:**
+   ```bash
+   npm run dev
+   ```
 
-Simply open [Lovable](https://lovable.dev/projects/aeb49d70-f993-41cc-a3a6-ed8e0ca39546) and click on Share -> Publish.
+The backend will be running on `http://localhost:8080`
 
-## Can I connect a custom domain to my Lovable project?
+### Frontend Setup
 
-Yes, you can!
+1. **Navigate to the frontend directory:**
+   ```bash
+   cd calm-counseling-connect
+   ```
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+2. **Install dependencies:**
+   ```bash
+   npm install
+   ```
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+3. **Start the development server:**
+   ```bash
+   npm run dev
+   ```
+
+The frontend will be running on `http://localhost:3000`
+
+## API Integration
+
+The frontend is fully connected to the backend through:
+
+### 1. **API Configuration**
+- Base URL: `/api` (proxied to `http://localhost:8080/api`)
+- Authentication headers automatically included
+- CORS configured for cross-origin requests
+
+### 2. **Redux Toolkit Query Setup**
+- Centralized API slice with authentication
+- Automatic token management
+- Error handling and loading states
+- Cache invalidation and optimistic updates
+
+### 3. **Available API Endpoints**
+
+#### Authentication
+- `POST /api/users/login` - User login
+- `POST /api/users/register` - User registration
+- `POST /api/users/logout` - User logout
+- `GET /api/users/profile` - Get user profile
+- `PUT /api/users/profile` - Update user profile
+
+#### Services
+- `GET /api/services` - Get all services
+- `GET /api/services/:id` - Get service by ID
+- `POST /api/services` - Create new service
+- `PUT /api/services/:id` - Update service
+- `DELETE /api/services/:id` - Delete service
+
+#### Counselors
+- `GET /api/counselors` - Get all counselors
+- `GET /api/counselors/:id` - Get counselor by ID
+- `POST /api/counselors` - Create new counselor
+- `PUT /api/counselors/:id` - Update counselor
+- `DELETE /api/counselors/:id` - Delete counselor
+
+#### Appointments
+- `GET /api/appointments` - Get all appointments
+- `GET /api/appointments/:id` - Get appointment by ID
+- `GET /api/appointments/user` - Get user's appointments
+- `POST /api/appointments` - Create new appointment
+- `PUT /api/appointments/:id` - Update appointment
+- `DELETE /api/appointments/:id` - Delete appointment
+- `PUT /api/appointments/:id/cancel` - Cancel appointment
+
+### 4. **Custom Hooks**
+
+#### `useAuth()`
+Provides authentication state and actions:
+```typescript
+const { 
+  user, 
+  isAuthenticated, 
+  isAdmin, 
+  isCounselor,
+  login, 
+  register, 
+  logout 
+} = useAuth();
+```
+
+#### API Hooks
+All API endpoints are available as React hooks:
+```typescript
+// Services
+const { data: services, isLoading } = useGetServicesQuery();
+const [createService] = useCreateServiceMutation();
+
+// Appointments
+const { data: appointments } = useGetUserAppointmentsQuery();
+const [bookAppointment] = useCreateAppointmentMutation();
+```
+
+## Development
+
+### Running Both Servers
+
+1. **Terminal 1 - Backend:**
+   ```bash
+   cd backend
+   npm run dev
+   ```
+
+2. **Terminal 2 - Frontend:**
+   ```bash
+   cd calm-counseling-connect
+   npm run dev
+   ```
+
+### Building for Production
+
+1. **Backend:**
+   ```bash
+   cd backend
+   npm run build
+   npm start
+   ```
+
+2. **Frontend:**
+   ```bash
+   cd calm-counseling-connect
+   npm run build
+   ```
+
+## Environment Variables
+
+### Backend (.env)
+```env
+PORT=8080
+MONGODB_URI=mongodb://localhost:27017/counseling-app
+JWT_SECRET=your-secret-key-here
+NODE_ENV=development
+```
+
+### Frontend (.env)
+```env
+VITE_API_BASE_URL=http://localhost:8080/api
+VITE_APP_NAME=Calm Counseling Connect
+VITE_APP_VERSION=1.0.0
+```
+
+## Authentication Flow
+
+1. User registers/logs in through the frontend
+2. Backend validates credentials and returns JWT token
+3. Frontend stores token in localStorage and Redux state
+4. All subsequent API calls include the token in Authorization header
+5. Backend middleware validates token for protected routes
+
+## Error Handling
+
+- Global error handling in RTK Query
+- Toast notifications for user feedback
+- Proper HTTP status codes
+- Validation error messages
+
+## Security Features
+
+- JWT token-based authentication
+- Password hashing with bcryptjs
+- CORS configuration
+- Protected routes with middleware
+- Input validation and sanitization
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Test thoroughly
+5. Submit a pull request
+
+## License
+
+This project is licensed under the MIT License.

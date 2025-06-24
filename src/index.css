@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Lato:wght@400;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -74,20 +75,24 @@
     --input: 217.2 32.6% 17.5%;
     --ring: 212.7 26.8% 83.9%;
   }
-}
 
-@layer base {
   * {
     @apply border-border;
   }
   body {
     @apply bg-background text-foreground;
     font-feature-settings: "rlig" 1, "calt" 1;
+    font-family: 'Lato', sans-serif;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Inter', sans-serif;
   }
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+    transition: linear;
   }
 }
