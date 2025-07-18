@@ -135,16 +135,22 @@ const About = () => {
                   <h3 className="text-2xl font-semibold text-[#4285F4] mb-4">Dr. P. Priyanka</h3>
                   <div className="space-y-4 text-gray-700 font-light">
                     <p>
-                      Hello, I'm P. Priyanka, the heart behind Intell Counselling. As a dedicated and seasoned counsellor, I bring a wealth of experience and a genuine passion for guiding individuals through life's challenges, fostering mental and emotional well-being.
+                      Priyanka R., Founder of Intell Counselling, is a Counseling Psychologist with 5+ years of experience in emotional and behavioral wellness. She currently serves as Senior Student Counselor at Rajalakshmi Engineering College, where she supports students and faculty through academic, emotional, and life challenges.
+                    </p>
+                    <p className="italic text-[#4285F4]">
+                      “She has guided individuals from pre-teens finding their identity to adults healing from emotional trauma.”
                     </p>
                     <p>
-                      With a strong educational foundation, I earned my BSc in Psychology from Women's Christian College, followed by an MSc in Psychology from Madras University. Additionally, I hold a Diploma in Counseling Services and certifications in career guidance and memory enhancement. My commitment to continuous learning ensures that I stay at the forefront of counseling practices.
+                      Her counseling spans academic stress, anxiety, depression, suicidal thoughts, addiction, healthcare-related trauma, and relationship conflicts across all age groups.
+                    </p>
+                    <p className="italic text-[#4285F4]">
+                      “What sets her apart is her ability to turn insight into action — and emotion into clarity.”
                     </p>
                     <p>
-                      Over the years, I have made a meaningful impact, having worked in more than five schools as a school counsellor. Currently, I am proud to serve as a student counsellor at Rajalakshmi Engineering College. My journey has been focused on empowering minds and transforming lives.
+                      She has led numerous workshops on emotional intelligence, digital discipline, stress management, and more — making mental health approachable and actionable.
                     </p>
-                    <p>
-                      At Intell Counselling, I am dedicated to providing compassionate and effective counseling services, helping individuals navigate life's complexities and achieve lasting positive change. I look forward to being a supportive guide on your journey to well-being.
+                    <p className="italic text-[#4285F4]">
+                      “Her mission is simple — to help people feel lighter, think clearer, and live fuller.”
                     </p>
                   </div>
                 </div>

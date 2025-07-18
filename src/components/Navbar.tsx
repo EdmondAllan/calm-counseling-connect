@@ -39,7 +39,7 @@ const Navbar = () => {
             <img
               src="/intellcounsellinglogoforweb.png"
               alt="Intell Counselling Logo"
-              className="h-12 w-auto"
+              className="h-14 w-auto"
             />
           </NavLink>
 

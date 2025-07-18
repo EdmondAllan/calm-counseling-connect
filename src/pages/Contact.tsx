@@ -168,21 +168,32 @@ const Contact = () => {
               </ul>
             </div>
             <div className="bg-white p-8 sm:p-10 rounded-2xl shadow-lg transition-all duration-400 ease-out hover:shadow-2xl hover:-translate-y-2">
-              <h3 className="text-2xl font-bold text-[#4285F4] mb-6">Office Hours</h3>
-              <ul className="space-y-4 text-[#343A40] font-light">
-                <li className="flex justify-between items-center border-b border-gray-100 pb-3">
-                  <span>Monday - Friday</span>
-                  <span className="font-medium">9:00 AM - 6:00 PM</span>
-                </li>
-                <li className="flex justify-between items-center border-b border-gray-100 pb-3">
-                  <span>Saturday</span>
-                  <span className="font-medium">10:00 AM - 4:00 PM</span>
-                </li>
-                <li className="flex justify-between items-center">
-                  <span>Sunday</span>
-                  <span className="font-medium text-red-500">Closed</span>
-                </li>
-              </ul>
+              <h3 className="text-2xl font-bold text-[#4285F4] mb-6">Availability</h3>
+              <div className="space-y-6">
+                <div className="flex items-start gap-4 p-4 bg-blue-50/40 rounded-lg">
+                  <Clock className="w-7 h-7 text-blue-500 mt-1" />
+                  <div>
+                    <div className="font-bold text-lg text-[#343A40]">Online Sessions</div>
+                    <div className="text-sm text-gray-600 mt-1">Monday – Friday</div>
+                    <div className="text-sm text-gray-600">10:00 AM – 4:00 PM</div>
+                  </div>
+                </div>
+                <div className="flex items-start gap-4 p-4 bg-green-50/40 rounded-lg">
+                  <MapPin className="w-7 h-7 text-green-500 mt-1" />
+                  <div>
+                    <div className="font-bold text-lg text-[#343A40]">In-Person Sessions</div>
+                    <div className="text-sm text-gray-600 mt-1">Monday – Saturday</div>
+                    <div className="text-sm text-gray-600">5:00 PM – 8:00 PM</div>
+                  </div>
+                </div>
+                <div className="flex items-start gap-4 p-4 bg-gray-50 rounded-lg">
+                  <Clock className="w-7 h-7 text-gray-400 mt-1" />
+                  <div>
+                    <div className="font-bold text-lg text-[#343A40]">Sunday</div>
+                    <div className="text-sm text-red-500 font-semibold mt-1">Closed</div>
+                  </div>
+                </div>
+              </div>
             </div>
           </motion.div>
 
