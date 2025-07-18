@@ -472,6 +472,7 @@ const BookingPage = () => {
                             selected={booking.date}
                             onSelect={handleDateSelect}
                             initialFocus
+                            disabled={{ before: new Date() }}
                           />
                         </PopoverContent>
                       </Popover>

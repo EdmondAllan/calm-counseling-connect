@@ -85,19 +85,19 @@ const Footer = () => {
           <div className="footer-col footer-col-contact">
             <h3>Contact Information</h3>
             <ul>
-              <li>Phone: +91 9486991505</li>
-              <li>Email: info@intellcounselling.com</li>
-              <li>Location: Chennai, Tamil Nadu, India</li>
+              <li>Phone: +91 9488991905</li>
+              <li>Email: intellcounselling@gmail.com</li>
+              <li>Location: Plot No. 9, Omshakthi Street, Srinivasanagar, Ayappakkam, Chennai-600077</li>
             </ul>
           </div>
           
           {/* Column 4: Office Hours (Example - content not specified but included for structure) */}
           <div className="footer-col footer-col-hours">
-              <h3>Office Hours</h3>
+              <h3>Availability</h3>
               <ul>
-                  <li>Monday - Friday: 9:00 AM - 6:00 PM</li>
-                  <li>Saturday: 10:00 AM - 4:00 PM</li>
-                  <li>Sunday: Closed</li>
+                  <li>Online Sessions: Monday to Friday : 10 AM – 4 PM</li>
+                  <li>In-Person Sessions: Monday to Saturday : 5 PM – 8 PM</li>
+                  <li>Sunday: <span style={{ color: '#ef4444', fontWeight: 'bold' }}>Closed</span></li>
               </ul>
           </div>
 
