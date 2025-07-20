@@ -222,7 +222,12 @@ const BookingPage = () => {
         return;
       }
     }
-    
+    if (currentStep === 2) {
+      if (!booking.counselingType || !booking.date || !booking.time) {
+        toast.error("Please select type of counseling, date, and time to continue.");
+        return;
+      }
+    }
     setCurrentStep(prev => prev + 1)
   }
   
@@ -517,6 +522,23 @@ const BookingPage = () => {
                   <form onSubmit={handleSubmit}>
                     <h2 className="text-3xl font-bold text-center text-gray-800 mt-8">Payment Details</h2>
                     <p className="text-center text-gray-500 mt-2 mb-8">Confirm your booking details and proceed to payment.</p>
+                    <div className="max-w-xl mx-auto mb-8">
+  <div className="bg-gray-50 rounded-xl shadow-md border border-gray-200 p-8">
+    <div className="border-b-4 border-blue-700 rounded-t-xl mb-6"></div>
+    <h3 className="text-2xl font-bold text-blue-800 mb-6 text-center tracking-tight font-sans">Booking Summary</h3>
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-3 text-[1rem] text-gray-800 font-sans items-start">
+      <div><span className="font-semibold text-blue-900">Name:</span> {booking.name}</div>
+      <div><span className="font-semibold text-blue-900">Phone:</span> {booking.phone}</div>
+      <div className="sm:col-span-2"><span className="font-semibold text-blue-900">Counseling Type:</span> {counselingTypes.find(c => c.id === booking.counselingType)?.name || booking.counselingType}</div>
+      <div><span className="font-semibold text-blue-900">Date:</span> {booking.date ? (typeof booking.date === 'string' ? booking.date : format(booking.date, 'PPP')) : ''}</div>
+      <div><span className="font-semibold text-blue-900">Time:</span> {booking.time}</div>
+      <div><span className="font-semibold text-blue-900">Session Mode:</span> {booking.sessionMode === 'in-person' ? 'In-Person' : 'Online'}</div>
+      <div><span className="font-semibold text-blue-900">Session Fee:</span> ₹{booking.sessionFee}</div>
+      <div><span className="font-semibold text-blue-900">Session Duration:</span> 45 mins</div>
+      {booking.notes && <div className="sm:col-span-2"><span className="font-semibold text-blue-900">Notes:</span> {booking.notes}</div>}
+    </div>
+  </div>
+</div>
                     <div className="mt-10 flex gap-4">
                       <GradientButton onClick={handleBack} fullWidth>
                         <ArrowLeft /> Back
@@ -525,6 +547,15 @@ const BookingPage = () => {
                         {isSubmitting ? "Processing..." : "Confirm & Pay"}
                       </GradientButton>
                     </div>
+                    <p className="flex flex-col items-center justify-center mt-6">
+  <span className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-blue-100 via-blue-50 to-purple-100 border border-blue-200 shadow-sm">
+    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-blue-600 animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z" /></svg>
+    <span className="text-base font-semibold text-blue-800">
+      Please Note: <span className="font-bold text-blue-900">Once a counseling session is booked, it is confirmed and <u>non-refundable</u>.</span>
+    </span>
+  </span>
+  <span className="text-xs text-gray-500 mt-1">We appreciate your understanding and commitment to your well-being!</span>
+</p>
                   </form>
                 )}
 
