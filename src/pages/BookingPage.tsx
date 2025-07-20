@@ -523,24 +523,76 @@ const BookingPage = () => {
                     <h2 className="text-3xl font-bold text-center text-gray-800 mt-8">Payment Details</h2>
                     <p className="text-center text-gray-500 mt-2 mb-8">Confirm your booking details and proceed to payment.</p>
                     <div className="max-w-xl mx-auto mb-8">
-  <div className="bg-gray-50 rounded-xl shadow-md border border-gray-200 p-8">
-    <div className="border-b-4 border-blue-700 rounded-t-xl mb-6"></div>
-    <h3 className="text-2xl font-bold text-blue-800 mb-6 text-center tracking-tight font-sans">Booking Summary</h3>
-    <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4 text-[1rem] text-gray-800 font-sans items-start">
-      <div className="flex"><span className="font-semibold text-blue-900 inline-block w-40">Name:</span><span>{booking.name}</span></div>
-      <div className="flex"><span className="font-semibold text-blue-900 inline-block w-40">Phone:</span><span>{booking.phone}</span></div>
-      <div className="sm:col-span-2 flex"><span className="font-semibold text-blue-900 inline-block w-40">Counseling Type:</span><span>{counselingTypes.find(c => c.id === booking.counselingType)?.name || booking.counselingType}</span></div>
-      <div className="flex"><span className="font-semibold text-blue-900 inline-block w-40">Date:</span><span>{booking.date ? (typeof booking.date === 'string' ? booking.date : format(booking.date, 'PPP')) : ''}</span></div>
-      <div className="flex"><span className="font-semibold text-blue-900 inline-block w-40">Time:</span><span>{booking.time}</span></div>
-      <div className="flex"><span className="font-semibold text-blue-900 inline-block w-40">Session Mode:</span><span>{booking.sessionMode === 'in-person' ? 'In-Person' : 'Online'}</span></div>
-      <div className="flex"><span className="font-semibold text-blue-900 inline-block w-40">Session Fee:</span><span>₹{booking.sessionFee}</span></div>
-      <div className="flex"><span className="font-semibold text-blue-900 inline-block w-40">Session Duration:</span><span>45 mins</span></div>
-      {booking.notes && (
-        <div className="sm:col-span-2 flex"><span className="font-semibold text-blue-900 inline-block w-40">Notes:</span><span>{booking.notes}</span></div>
-      )}
-    </div>
-  </div>
-</div>
+                      <div className="bg-white rounded-xl shadow-md border border-gray-200 p-0 overflow-hidden">
+                        <div className="h-1 bg-blue-500 w-full" />
+                        <div className="p-8">
+                          <h3 className="text-2xl font-bold text-center text-gray-900 mb-2">Booking Summary</h3>
+                          <p className="text-center text-gray-500 mb-6">Your appointment details</p>
+                          {/* Client Info */}
+                          <div className="flex flex-col sm:flex-row justify-between items-center mb-4 gap-4">
+                            <div className="flex items-center gap-2">
+                              <User className="w-5 h-5 text-gray-400" />
+                              <span className="text-xs text-gray-500">Client Name</span>
+                              <span className="font-semibold text-lg text-gray-900 ml-2">{booking.name}</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <Phone className="w-5 h-5 text-gray-400" />
+                              <span className="text-xs text-gray-500">Phone Number</span>
+                              <span className="font-semibold text-lg text-gray-900 ml-2">{booking.phone}</span>
+                            </div>
+                          </div>
+                          <hr className="my-4" />
+                          {/* Service Details */}
+                          <div>
+                            <span className="text-xs font-semibold text-blue-700 flex items-center gap-2 mb-1"><span className="w-2 h-2 rounded-full bg-blue-500 inline-block" /> SERVICE DETAILS</span>
+                            <div className="bg-blue-50 rounded-lg p-4 mt-2 mb-6">
+                              <div className="font-semibold text-lg text-gray-800 mb-1">{counselingTypes.find(c => c.id === booking.counselingType)?.name || booking.counselingType}</div>
+                              <span className="inline-block px-3 py-1 text-xs rounded-full bg-blue-100 text-blue-700 font-semibold">Counseling Session</span>
+                            </div>
+                          </div>
+                          {/* Session Details */}
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                            <div className="flex items-center gap-3">
+                              <CalendarIcon className="w-6 h-6 text-green-400" />
+                              <div>
+                                <div className="text-xs text-gray-500">Date</div>
+                                <div className="font-semibold text-gray-800">{booking.date ? (typeof booking.date === 'string' ? booking.date : format(booking.date, 'PPP')) : ''}</div>
+                              </div>
+                            </div>
+                            <div className="flex items-center gap-3">
+                              <Globe className="w-6 h-6 text-purple-400" />
+                              <div>
+                                <div className="text-xs text-gray-500">Session Mode</div>
+                                <div className="font-semibold text-gray-800">{booking.sessionMode === 'in-person' ? 'In-Person' : 'Online'}</div>
+                              </div>
+                            </div>
+                            <div className="flex items-center gap-3">
+                              <Clock className="w-6 h-6 text-orange-400" />
+                              <div>
+                                <div className="text-xs text-gray-500">Time</div>
+                                <div className="font-semibold text-gray-800">{booking.time}</div>
+                              </div>
+                            </div>
+                            <div className="flex items-center gap-3">
+                              <Star className="w-6 h-6 text-blue-400" />
+                              <div>
+                                <div className="text-xs text-gray-500">Duration</div>
+                                <div className="font-semibold text-gray-800">45 minutes</div>
+                              </div>
+                            </div>
+                          </div>
+                          {/* Session Fee */}
+                          <div className="bg-green-50 rounded-lg p-4 flex items-center justify-between mt-2 mb-2">
+                            <div className="flex items-center gap-2">
+                              <CreditCard className="w-6 h-6 text-green-500" />
+                              <span className="text-gray-700 font-semibold">Session Fee</span>
+                              <span className="text-2xl font-bold text-gray-900 ml-2">₹{booking.sessionFee}</span>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="text-center text-xs text-gray-500 pb-4">Please arrive 10 minutes early for your appointment</div>
+                      </div>
+                    </div>
                     <div className="mt-10 flex gap-4">
                       <GradientButton onClick={handleBack} fullWidth>
                         <ArrowLeft /> Back
@@ -550,14 +602,14 @@ const BookingPage = () => {
                       </GradientButton>
                     </div>
                     <p className="flex flex-col items-center justify-center mt-6">
-  <span className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-blue-100 via-blue-50 to-purple-100 border border-blue-200 shadow-sm">
-    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-blue-600 animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z" /></svg>
-    <span className="text-base font-semibold text-blue-800">
-      Please Note: <span className="font-bold text-blue-900">Once a counseling session is booked, it is confirmed and <u>non-refundable</u>.</span>
-    </span>
-  </span>
-  <span className="text-xs text-gray-500 mt-1">We appreciate your understanding and commitment to your well-being!</span>
-</p>
+                      <span className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-blue-100 via-blue-50 to-purple-100 border border-blue-200 shadow-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-blue-600 animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z" /></svg>
+                        <span className="text-base font-semibold text-blue-800">
+                          Please Note: <span className="font-bold text-blue-900">Once a counseling session is booked, it is confirmed and <u>non-refundable</u>.</span>
+                        </span>
+                      </span>
+                      <span className="text-xs text-gray-500 mt-1">We appreciate your understanding and commitment to your well-being!</span>
+                    </p>
                   </form>
                 )}
 
