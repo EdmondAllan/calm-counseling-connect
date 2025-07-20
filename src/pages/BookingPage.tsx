@@ -526,16 +526,18 @@ const BookingPage = () => {
   <div className="bg-gray-50 rounded-xl shadow-md border border-gray-200 p-8">
     <div className="border-b-4 border-blue-700 rounded-t-xl mb-6"></div>
     <h3 className="text-2xl font-bold text-blue-800 mb-6 text-center tracking-tight font-sans">Booking Summary</h3>
-    <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-3 text-[1rem] text-gray-800 font-sans items-start">
-      <div><span className="font-semibold text-blue-900">Name:</span> {booking.name}</div>
-      <div><span className="font-semibold text-blue-900">Phone:</span> {booking.phone}</div>
-      <div className="sm:col-span-2"><span className="font-semibold text-blue-900">Counseling Type:</span> {counselingTypes.find(c => c.id === booking.counselingType)?.name || booking.counselingType}</div>
-      <div><span className="font-semibold text-blue-900">Date:</span> {booking.date ? (typeof booking.date === 'string' ? booking.date : format(booking.date, 'PPP')) : ''}</div>
-      <div><span className="font-semibold text-blue-900">Time:</span> {booking.time}</div>
-      <div><span className="font-semibold text-blue-900">Session Mode:</span> {booking.sessionMode === 'in-person' ? 'In-Person' : 'Online'}</div>
-      <div><span className="font-semibold text-blue-900">Session Fee:</span> ₹{booking.sessionFee}</div>
-      <div><span className="font-semibold text-blue-900">Session Duration:</span> 45 mins</div>
-      {booking.notes && <div className="sm:col-span-2"><span className="font-semibold text-blue-900">Notes:</span> {booking.notes}</div>}
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4 text-[1rem] text-gray-800 font-sans items-start">
+      <div className="flex"><span className="font-semibold text-blue-900 inline-block w-40">Name:</span><span>{booking.name}</span></div>
+      <div className="flex"><span className="font-semibold text-blue-900 inline-block w-40">Phone:</span><span>{booking.phone}</span></div>
+      <div className="sm:col-span-2 flex"><span className="font-semibold text-blue-900 inline-block w-40">Counseling Type:</span><span>{counselingTypes.find(c => c.id === booking.counselingType)?.name || booking.counselingType}</span></div>
+      <div className="flex"><span className="font-semibold text-blue-900 inline-block w-40">Date:</span><span>{booking.date ? (typeof booking.date === 'string' ? booking.date : format(booking.date, 'PPP')) : ''}</span></div>
+      <div className="flex"><span className="font-semibold text-blue-900 inline-block w-40">Time:</span><span>{booking.time}</span></div>
+      <div className="flex"><span className="font-semibold text-blue-900 inline-block w-40">Session Mode:</span><span>{booking.sessionMode === 'in-person' ? 'In-Person' : 'Online'}</span></div>
+      <div className="flex"><span className="font-semibold text-blue-900 inline-block w-40">Session Fee:</span><span>₹{booking.sessionFee}</span></div>
+      <div className="flex"><span className="font-semibold text-blue-900 inline-block w-40">Session Duration:</span><span>45 mins</span></div>
+      {booking.notes && (
+        <div className="sm:col-span-2 flex"><span className="font-semibold text-blue-900 inline-block w-40">Notes:</span><span>{booking.notes}</span></div>
+      )}
     </div>
   </div>
 </div>
