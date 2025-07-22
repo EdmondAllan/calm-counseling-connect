@@ -56,7 +56,12 @@ const Contact = () => {
         toast.success("Message sent successfully! We'll get back to you soon.");
         setFormData({ name: "", email: "", phone: "", message: "" });
       } else {
-        const errorData = await response.json();
+        let errorData = { message: "Failed to send message. Please try again later." };
+        try {
+          errorData = await response.json();
+        } catch (e) {
+          // If response is not JSON, keep the default error message
+        }
         const errorMessage = errorData.message || "Failed to send message. Please try again later.";
         toast.error(errorMessage);
       }
