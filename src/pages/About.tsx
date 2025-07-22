@@ -126,7 +126,7 @@ const About = () => {
               <div className="flex flex-col md:flex-row gap-8">
                 <div className="md:w-1/3">
                   <img 
-                    src="https://via.placeholder.com/300x400?text=Dr.+P.+Priyanka" 
+                    src="/intellcounsellinglogoforweb.png" 
                     alt="Dr. P. Priyanka" 
                     className="rounded-lg w-full h-auto object-cover shadow-lg"
                   />

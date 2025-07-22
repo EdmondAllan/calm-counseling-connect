@@ -16,7 +16,7 @@ const FounderProfile = () => {
               <div className="md:w-1/3">
                 <div className="rounded-lg overflow-hidden mb-4">
                   <img 
-                    src="https://via.placeholder.com/300x400?text=Dr.+P.+Priyanka"
+                    src="/intellcounsellinglogoforweb.png"
                     alt="Dr. P. Priyanka" 
                     className="w-full h-auto object-cover"
                   />
