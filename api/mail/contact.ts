@@ -58,7 +58,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     let error: { message?: string } = {};
     if (!response.ok) {
       try {
-        error = await response.json();
+        error = (await response.json()) as { message?: string };
       } catch (e) {
         error = { message: 'Unknown error from Resend API' };
       }
