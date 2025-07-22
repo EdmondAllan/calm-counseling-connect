@@ -39,8 +39,12 @@ const Contact = () => {
     e.preventDefault();
     setIsSubmitting(true);
 
+    const apiUrl = import.meta.env.DEV
+      ? '/api/mail/contact' // Using proxy in dev
+      : '/api/mail/contact'; // Same for production
+
     try {
-      const response = await fetch('/api/mail/contact', {
+      const response = await fetch(apiUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -78,7 +82,7 @@ const Contact = () => {
             className="text-3xl md:text-4xl font-bold text-[#343A40] mb-4"
             variants={itemVariants}
           >
-            Contact Us
+            Contact Us Now
           </motion.h2>
           <motion.p 
             className="max-w-3xl mx-auto text-lg md:text-xl text-[#343A40] font-light"

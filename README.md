@@ -271,3 +271,40 @@ VITE_APP_VERSION=1.0.0
 ## License
 
 This project is licensed under the MIT License.
+
+## Local Development
+
+To run both the Vite frontend and Vercel API locally:
+
+### 1. Open two terminals
+
+#### Terminal 1: Start the Vite frontend
+```sh
+cd calm-counseling-connect
+npm run dev
+```
+- This will run your frontend at http://localhost:5173 (or another port if 5173 is busy).
+
+#### Terminal 2: Start the Vercel API
+```sh
+cd calm-counseling-connect
+vercel dev --listen 4000
+```
+- This will run your API at http://localhost:4000/api/mail/contact.
+
+### 2. Update your frontend API URL (already set up in Contact.tsx):
+```js
+const apiUrl = import.meta.env.DEV
+  ? "http://localhost:4000/api/mail/contact"
+  : "/api/mail/contact";
+```
+
+### 3. Test your app
+- Open http://localhost:5173 in your browser.
+- Fill out and submit the contact form.
+- The API call will go to your local Vercel serverless function.
+
+## Production (Vercel)
+- Push your code to GitHub.
+- Vercel will build and deploy both frontend and API together.
+- Your frontend should use `/api/mail/contact` (relative path) in production.
