@@ -16,7 +16,6 @@ const Footer = () => {
         }
       });
     };
-cd
     const observer = new IntersectionObserver(observerCallback, {
       root: null,
       rootMargin: '0px',
