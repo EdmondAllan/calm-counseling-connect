@@ -1,20 +1,48 @@
 #!/usr/bin/env node
 
-// Custom build script for Vercel to completely avoid rollup native module issues
-process.env.ROLLUP_SKIP_NATIVE = 'true';
-process.env.VITE_SKIP_NATIVE = 'true';
-process.env.NODE_OPTIONS = '--max-old-space-size=4096';
-
+// Custom build script for Vercel that completely bypasses rollup
 const { execSync } = require('child_process');
+const fs = require('fs');
+const path = require('path');
 
 try {
-  console.log('Starting Vercel build with native module bypass...');
+  console.log('Starting custom build without rollup...');
   
-  // Set additional environment variables
-  process.env.ESBUILD_BINARY_PATH = '';
-  process.env.ROLLUP_SKIP_NATIVE_BINARY = 'true';
+  // Set environment variables to skip native modules
+  process.env.ROLLUP_SKIP_NATIVE = 'true';
+  process.env.VITE_SKIP_NATIVE = 'true';
+  process.env.NODE_OPTIONS = '--max-old-space-size=4096';
   
-  execSync('npx vite build --mode production', { 
+  // Create dist directory if it doesn't exist
+  if (!fs.existsSync('dist')) {
+    fs.mkdirSync('dist', { recursive: true });
+  }
+  
+  // Copy index.html to dist
+  if (fs.existsSync('index.html')) {
+    fs.copyFileSync('index.html', 'dist/index.html');
+  }
+  
+  // Copy public assets
+  if (fs.existsSync('public')) {
+    execSync('cp -r public/* dist/', { stdio: 'inherit' });
+  }
+  
+  // Use esbuild to bundle the main entry point
+  const esbuildCommand = [
+    'npx esbuild src/main.tsx',
+    '--bundle',
+    '--outdir=dist',
+    '--format=esm',
+    '--target=esnext',
+    '--minify',
+    '--sourcemap',
+    '--external:react',
+    '--external:react-dom'
+  ].join(' ');
+  
+  console.log('Running esbuild...');
+  execSync(esbuildCommand, { 
     stdio: 'inherit',
     env: {
       ...process.env,

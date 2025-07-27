@@ -8,7 +8,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "build:vercel": "cross-env ROLLUP_SKIP_NATIVE=true VITE_SKIP_NATIVE=true vite build --mode production",
+    "build:vercel": "webpack --config webpack.config.js",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
     "preview": "vite preview"
@@ -79,16 +79,23 @@
     "@vitejs/plugin-react-swc": "^3.5.0",
     "autoprefixer": "^10.4.20",
     "cross-env": "^7.0.3",
+    "css-loader": "^6.10.0",
+    "esbuild": "^0.20.0",
     "eslint": "^9.9.0",
     "eslint-plugin-react-hooks": "^5.1.0-rc.0",
     "eslint-plugin-react-refresh": "^0.4.9",
     "globals": "^15.9.0",
     "lovable-tagger": "^1.1.7",
     "postcss": "^8.4.47",
+    "postcss-loader": "^8.1.0",
+    "style-loader": "^3.3.4",
     "tailwindcss": "^3.4.11",
+    "ts-loader": "^9.5.1",
     "typescript": "^5.5.3",
     "typescript-eslint": "^8.0.1",
-    "vite": "^5.4.19"
+    "vite": "^5.4.19",
+    "webpack": "^5.90.0",
+    "webpack-cli": "^5.1.4"
   },
   "overrides": {
     "rollup": {
