@@ -27,16 +27,10 @@ try {
     fs.copyFileSync('index.html', 'dist/index.html');
   }
   
-  // Process CSS with PostCSS first
+  // Copy CSS file directly
   if (fs.existsSync('src/index.css')) {
-    console.log('Processing CSS with PostCSS...');
-    execSync('npx postcss src/index.css -o dist/styles.css', { 
-      stdio: 'inherit',
-      env: {
-        ...process.env,
-        NODE_ENV: 'production'
-      }
-    });
+    console.log('Copying CSS file...');
+    fs.copyFileSync('src/index.css', 'dist/styles.css');
   }
   
   // Build with esbuild directly - using IIFE format for better React compatibility
@@ -50,8 +44,7 @@ try {
     '--minify',
     '--sourcemap',
     '--loader:.tsx=tsx',
-    '--loader:.ts=ts',
-    '--loader:.css=css'
+    '--loader:.ts=ts'
   ].join(' ');
   
   console.log('Running esbuild...');
