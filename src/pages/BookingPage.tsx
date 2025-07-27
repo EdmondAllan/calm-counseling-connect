@@ -30,6 +30,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Calendar } from "@/components/ui/calendar"
 import { format } from "date-fns"
 import Stepper from "@/components/ui/stepper"
+import PaymentGateway from "@/components/PaymentGateway"
 
 declare global {
   interface Window {
@@ -171,7 +172,7 @@ const BookingPage = () => {
     date: undefined as Date | undefined,
     time: "",
     sessionMode: "in-person",
-    sessionFee: "3",
+    sessionFee: "1000", // Changed from "3" to "1000"
     paymentMethod: "credit_card",
     notes: "",
   })
@@ -182,6 +183,7 @@ const BookingPage = () => {
     phone: false,
   })
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
@@ -216,27 +218,46 @@ const BookingPage = () => {
   }
   
   const handleNext = () => {
-    // Validate current step before proceeding
-    if (currentStep === 1) {
-      const isNameValid = validateName(booking.name);
-      const isEmailValid = validateEmail(booking.email);
-      const isPhoneValid = validatePhone(booking.phone);
+    try {
+      setError(null);
       
-      if (!isNameValid || !isEmailValid || !isPhoneValid) {
-        toast.error("Please fill in all required fields correctly");
-        return;
+      // Validate current step before proceeding
+      if (currentStep === 1) {
+        const isNameValid = validateName(booking.name);
+        const isEmailValid = validateEmail(booking.email);
+        const isPhoneValid = validatePhone(booking.phone);
+        
+        if (!isNameValid || !isEmailValid || !isPhoneValid) {
+          toast.error("Please fill in all required fields correctly");
+          return;
+        }
       }
-    }
-    if (currentStep === 2) {
-      if (!booking.counselingType || !booking.date || !booking.time) {
-        toast.error("Please select type of counseling, date, and time to continue.");
-        return;
+      if (currentStep === 2) {
+        if (!booking.counselingType || !booking.date || !booking.time) {
+          toast.error("Please select type of counseling, date, and time to continue.");
+          return;
+        }
       }
+      
+      console.log('Moving to step:', currentStep + 1);
+      console.log('Current booking data:', booking);
+      
+      setCurrentStep(prev => prev + 1)
+    } catch (error: any) {
+      console.error('Error in handleNext:', error);
+      setError(error.message);
     }
-    setCurrentStep(prev => prev + 1)
   }
   
-  const handleBack = () => setCurrentStep(prev => prev - 1)
+  const handleBack = () => {
+    try {
+      setError(null);
+      setCurrentStep(prev => prev - 1)
+    } catch (error: any) {
+      console.error('Error in handleBack:', error);
+      setError(error.message);
+    }
+  }
 
   const handleFinalSubmit = async (paymentDetails: any) => {
     const bookingData = {
@@ -276,92 +297,7 @@ const BookingPage = () => {
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (isSubmitting) return;
-    setIsSubmitting(true);
-    toast.info("Processing payment...");
 
-    try {
-      // 1. Create Order
-      const orderResponse = await fetch('/api/payment/create-order', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          amount: parseFloat(booking.sessionFee),
-          receipt: `receipt_for_${booking.email}_${Date.now()}`,
-        }),
-      });
-      
-      if (!orderResponse.ok) throw new Error('Failed to create payment order.');
-      
-      const order = await orderResponse.json();
-
-      // 2. Open Razorpay Checkout
-      const options = {
-        key: 'YOUR_RAZORPAY_KEY_ID', // Replace with your Key ID
-        amount: order.amount,
-        currency: order.currency,
-        name: 'Intell Counselling',
-        description: 'Session Booking',
-        order_id: order.id,
-        handler: async function (response: any) {
-          // 3. Verify Signature
-          try {
-            const verificationResponse = await fetch('/api/payment/verify-signature', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                order_id: order.id,
-                payment_id: response.razorpay_payment_id,
-                signature: response.razorpay_signature,
-              }),
-            });
-
-            const verificationResult = await verificationResponse.json();
-
-            if (verificationResult.status === 'success') {
-              toast.success("Payment successful!");
-              await handleFinalSubmit({
-                orderId: order.id,
-                paymentId: response.razorpay_payment_id,
-              });
-            } else {
-              throw new Error('Payment verification failed. Please contact support.');
-            }
-          } catch (error: any) {
-            toast.error("Payment Error", {
-              description: error.message || "An error occurred during payment verification.",
-            });
-            setIsSubmitting(false);
-          }
-        },
-        prefill: {
-          name: booking.name,
-          email: booking.email,
-          contact: booking.phone,
-        },
-        theme: {
-          color: '#4285F4',
-        },
-        modal: {
-          ondismiss: function() {
-            toast.warning("Payment cancelled", { description: "You have cancelled the payment process." });
-            setIsSubmitting(false);
-          }
-        }
-      };
-      
-      const rzp = new window.Razorpay(options);
-      rzp.open();
-
-    } catch (error: any) {
-      toast.error("Payment Initialization Failed", {
-        description: error.message || "Could not connect to the payment gateway. Please try again.",
-      });
-      setIsSubmitting(false);
-    }
-  };
 
   const variants = {
     hidden: { opacity: 0, x: 200 },
@@ -374,6 +310,11 @@ const BookingPage = () => {
       <style>{fadeOutAnimation}</style>
       <div className="container mx-auto px-4 py-8">
         <main className="max-w-4xl mx-auto">
+          {error && (
+            <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+              <p className="text-red-800">Error: {error}</p>
+            </div>
+          )}
           <div className="text-center mb-8">
             <h1 className="text-4xl font-bold text-gray-800 mb-4">Book Your Session</h1>
             <p className="text-gray-600">Take the first step towards better mental health</p>
@@ -524,7 +465,7 @@ const BookingPage = () => {
                 )}
                 
                 {currentStep === 3 && (
-                  <form onSubmit={handleSubmit}>
+                  <div>
                     <h2 className="text-3xl font-bold text-center text-gray-800 mt-8">Payment Details</h2>
                     <p className="text-center text-gray-500 mt-2 mb-8">Confirm your booking details and proceed to payment.</p>
                     <div className="max-w-xl mx-auto mb-8">
@@ -598,14 +539,45 @@ const BookingPage = () => {
                         <div className="text-center text-xs text-gray-500 pb-4">Please arrive 10 minutes early for your appointment</div>
                       </div>
                     </div>
-                    <div className="mt-10 flex gap-4">
-                      <GradientButton onClick={handleBack} fullWidth>
-                        <ArrowLeft /> Back
-                      </GradientButton>
-                      <GradientButton onClick={() => {}} type="submit" fullWidth disabled={isSubmitting}>
-                        {isSubmitting ? "Processing..." : "Confirm & Pay"}
-                      </GradientButton>
-                    </div>
+                                         <div className="mt-10 flex gap-4">
+                       <GradientButton onClick={handleBack} fullWidth>
+                         <ArrowLeft /> Back
+                       </GradientButton>
+                       <div className="flex-1">
+                         {(() => {
+                           try {
+                             const bookingData = {
+                               clientName: booking.name,
+                               phoneNumber: booking.phone,
+                               serviceName: counselingTypes.find(c => c.id === booking.counselingType)?.name || booking.counselingType,
+                               serviceType: "Counseling Session",
+                               date: booking.date ? (typeof booking.date === 'string' ? booking.date : format(booking.date, 'yyyy-MM-dd')) : '',
+                               time: booking.time,
+                               mode: booking.sessionMode === 'in-person' ? 'In-Person' : 'Online',
+                               duration: '45 minutes',
+                               fee: parseFloat(booking.sessionFee),
+                             };
+                             
+                             console.log('PaymentGateway bookingData:', bookingData);
+                             
+                             return <PaymentGateway bookingData={bookingData} />;
+                           } catch (error: any) {
+                             console.error('Error rendering PaymentGateway:', error);
+                             return (
+                               <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
+                                 <p className="text-red-800">Error loading payment gateway: {error.message}</p>
+                                 <button
+                                   onClick={() => window.location.reload()}
+                                   className="mt-2 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+                                 >
+                                   Reload Page
+                                 </button>
+                               </div>
+                             );
+                           }
+                         })()}
+                       </div>
+                     </div>
                     <p className="flex flex-col items-center justify-center mt-6">
                       <span className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-blue-100 via-blue-50 to-purple-100 border border-blue-200 shadow-sm">
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-blue-600 animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z" /></svg>
@@ -615,7 +587,7 @@ const BookingPage = () => {
                       </span>
                       <span className="text-xs text-gray-500 mt-1">We appreciate your understanding and commitment to your well-being!</span>
                     </p>
-                  </form>
+                  </div>
                 )}
 
                 {currentStep === 4 && (
