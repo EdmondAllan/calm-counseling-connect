@@ -17,19 +17,20 @@ try {
     execSync('cp -r public/* dist/', { stdio: 'inherit' });
   }
   
-  // Build with esbuild - bundle everything including React
+  // Build with esbuild - using global format for better React compatibility
   const esbuildCommand = [
     'npx esbuild src/main.tsx',
     '--bundle',
     '--outdir=dist',
-    '--format=iife',
+    '--format=global',
     '--global-name=App',
     '--target=es2020',
     '--minify',
     '--sourcemap',
     '--loader:.tsx=tsx',
     '--loader:.ts=ts',
-    '--loader:.css=css'
+    '--loader:.css=css',
+    '--define:process.env.NODE_ENV=\\"production\\"'
   ].join(' ');
   
   console.log('Running esbuild...');
