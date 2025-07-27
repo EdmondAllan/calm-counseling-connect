@@ -27,12 +27,13 @@ try {
     fs.copyFileSync('index.html', 'dist/index.html');
   }
   
-  // Build with esbuild directly
+  // Build with esbuild directly - using IIFE format for better React compatibility
   const esbuildCommand = [
     'npx esbuild src/main.tsx',
     '--bundle',
     '--outdir=dist',
-    '--format=esm',
+    '--format=iife',
+    '--global-name=App',
     '--target=es2020',
     '--minify',
     '--sourcemap',
@@ -52,12 +53,21 @@ try {
     }
   });
   
-  // Update the HTML to reference the built file
+  // Read the HTML file and add React CDN links
   let htmlContent = fs.readFileSync('dist/index.html', 'utf8');
+  
+  // Add React CDN links before the main script
+  const reactCDN = `
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  `;
+  
+  // Replace the script reference and add React CDN
   htmlContent = htmlContent.replace(
     '<script type="module" src="/src/main.tsx"></script>',
-    '<script type="module" src="/main.js"></script>'
+    reactCDN + '<script src="/main.js"></script>'
   );
+  
   fs.writeFileSync('dist/index.html', htmlContent);
   
   console.log('Build completed successfully!');
