@@ -43,9 +43,13 @@ export default defineConfig(({ mode }) => ({
   },
   define: {
     'process.env.NODE_ENV': JSON.stringify(mode),
-    'process.env.ROLLUP_SKIP_NATIVE': 'true'
+    'process.env.ROLLUP_SKIP_NATIVE': 'true',
+    'process.env.VITE_SKIP_NATIVE': 'true'
   },
   esbuild: {
     target: 'es2020'
+  },
+  rollupOptions: {
+    external: []
   }
 }));
