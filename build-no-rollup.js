@@ -27,6 +27,18 @@ try {
     fs.copyFileSync('index.html', 'dist/index.html');
   }
   
+  // Process CSS with PostCSS first
+  if (fs.existsSync('src/index.css')) {
+    console.log('Processing CSS with PostCSS...');
+    execSync('npx postcss src/index.css -o dist/styles.css', { 
+      stdio: 'inherit',
+      env: {
+        ...process.env,
+        NODE_ENV: 'production'
+      }
+    });
+  }
+  
   // Build with esbuild directly - using IIFE format for better React compatibility
   const esbuildCommand = [
     'npx esbuild src/main.tsx',
@@ -53,11 +65,12 @@ try {
     }
   });
   
-  // Read the HTML file and add React CDN links
+  // Read the HTML file and add React CDN links and CSS
   let htmlContent = fs.readFileSync('dist/index.html', 'utf8');
   
-  // Add React CDN links before the main script
+  // Add React CDN links and CSS before the main script
   const reactCDN = `
+    <link rel="stylesheet" href="/styles.css">
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
   `;
