@@ -7,7 +7,7 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "webpack --config webpack.config.js",
     "build:vercel": "webpack --config webpack.config.js",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
@@ -85,6 +85,7 @@
     "eslint-plugin-react-hooks": "^5.1.0-rc.0",
     "eslint-plugin-react-refresh": "^0.4.9",
     "globals": "^15.9.0",
+    "html-webpack-plugin": "^5.6.0",
     "lovable-tagger": "^1.1.7",
     "postcss": "^8.4.47",
     "postcss-loader": "^8.1.0",
