@@ -8,10 +8,11 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "build:vercel": "cross-env NODE_OPTIONS='--max-old-space-size=4096' vite build --mode production",
+    "build:vercel": "cross-env ROLLUP_SKIP_NATIVE=true vite build --mode production",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "postinstall": "npm rebuild"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",

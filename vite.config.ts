@@ -26,13 +26,13 @@ export default defineConfig(({ mode }) => ({
   },
   build: {
     target: 'esnext',
+    minify: 'esbuild',
     rollupOptions: {
       external: [],
     },
-    minify: 'esbuild',
   },
   optimizeDeps: {
-    exclude: ['@rollup/rollup-win32-x64-msvc'],
+    exclude: ['@rollup/rollup-win32-x64-msvc', '@rollup/rollup-linux-x64-gnu'],
     esbuildOptions: {
       target: 'esnext'
     }
