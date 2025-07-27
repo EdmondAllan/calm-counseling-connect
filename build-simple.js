@@ -12,27 +12,25 @@ try {
     fs.mkdirSync('dist', { recursive: true });
   }
   
-  // Copy index.html
-  if (fs.existsSync('index.html')) {
-    fs.copyFileSync('index.html', 'dist/index.html');
-  }
-  
-  // Copy public assets
+  // Copy public assets first
   if (fs.existsSync('public')) {
     execSync('cp -r public/* dist/', { stdio: 'inherit' });
   }
   
-  // Build with esbuild
+  // Build with esbuild - using iife format for better compatibility
   const esbuildCommand = [
     'npx esbuild src/main.tsx',
     '--bundle',
     '--outdir=dist',
-    '--format=esm',
-    '--target=esnext',
+    '--format=iife',
+    '--global-name=App',
+    '--target=es2020',
     '--minify',
     '--sourcemap',
     '--loader:.tsx=tsx',
-    '--loader:.ts=ts'
+    '--loader:.ts=ts',
+    '--loader:.css=css',
+    '--outfile=dist/main.js'
   ].join(' ');
   
   console.log('Running esbuild...');
@@ -44,7 +42,25 @@ try {
     }
   });
   
+  // Read the original HTML file
+  let htmlContent = fs.readFileSync('index.html', 'utf8');
+  
+  // Replace the script reference
+  htmlContent = htmlContent.replace(
+    '<script type="module" src="/src/main.tsx"></script>',
+    '<script src="/main.js"></script>'
+  );
+  
+  // Write the updated HTML to dist
+  fs.writeFileSync('dist/index.html', htmlContent);
+  
   console.log('Build completed successfully!');
+  console.log('Generated files in dist/');
+  
+  // List the generated files
+  const files = fs.readdirSync('dist');
+  console.log('Files in dist:', files);
+  
 } catch (error) {
   console.error('Build failed:', error.message);
   process.exit(1);
