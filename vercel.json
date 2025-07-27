@@ -5,7 +5,7 @@
       "use": "@vercel/static-build",
       "config": { 
         "distDir": "dist",
-        "installCommand": "rm -rf node_modules package-lock.json && npm install --platform=linux --arch=x64",
+        "installCommand": "rm -rf node_modules package-lock.json && npm install --platform=linux --arch=x64 --omit=optional",
         "buildCommand": "npm run build:vercel"
       }
     },
