@@ -24,4 +24,13 @@ export default defineConfig(({ mode }) => ({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  build: {
+    target: 'esnext',
+    rollupOptions: {
+      external: [],
+    },
+  },
+  optimizeDeps: {
+    exclude: ['@rollup/rollup-win32-x64-msvc']
+  }
 }));
