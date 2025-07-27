@@ -29,8 +29,15 @@ export default defineConfig(({ mode }) => ({
     rollupOptions: {
       external: [],
     },
+    minify: 'esbuild',
   },
   optimizeDeps: {
-    exclude: ['@rollup/rollup-win32-x64-msvc']
+    exclude: ['@rollup/rollup-win32-x64-msvc'],
+    esbuildOptions: {
+      target: 'esnext'
+    }
+  },
+  define: {
+    'process.env.NODE_ENV': JSON.stringify(mode)
   }
 }));

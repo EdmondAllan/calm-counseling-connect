@@ -6,7 +6,7 @@
       "config": { 
         "distDir": "dist",
         "installCommand": "npm install --platform=linux --arch=x64",
-        "buildCommand": "npm run build:vercel"
+        "buildCommand": "node vercel-build.js"
       }
     },
     {
@@ -22,5 +22,8 @@
     "api/**/*.ts": {
       "runtime": "nodejs18.x"
     }
+  },
+  "env": {
+    "ROLLUP_SKIP_NATIVE": "true"
   }
 } 
