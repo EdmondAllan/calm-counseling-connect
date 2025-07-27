@@ -25,12 +25,31 @@ export default defineConfig(({ mode }) => ({
     },
   },
   build: {
-    target: 'esnext',
+    target: 'es2020',
+    minify: 'esbuild',
     rollupOptions: {
       external: [],
     },
+    commonjsOptions: {
+      include: []
+    }
   },
   optimizeDeps: {
-    exclude: ['@rollup/rollup-win32-x64-msvc']
+    exclude: ['@rollup/rollup-win32-x64-msvc', '@rollup/rollup-linux-x64-gnu'],
+    esbuildOptions: {
+      target: 'es2020'
+    },
+    force: true
+  },
+  define: {
+    'process.env.NODE_ENV': JSON.stringify(mode),
+    'process.env.ROLLUP_SKIP_NATIVE': 'true',
+    'process.env.VITE_SKIP_NATIVE': 'true'
+  },
+  esbuild: {
+    target: 'es2020'
+  },
+  rollupOptions: {
+    external: []
   }
 }));

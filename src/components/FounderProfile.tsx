@@ -17,7 +17,7 @@ const FounderProfile = () => {
               {/* Left Section: Info */}
               <div className="flex-1 min-w-0">
                 <h3 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">Dr.Priyanka P</h3>
-                <p className="text-lg text-gray-600 mb-2 font-medium">Founder & Lead Counselor, IntellCounselling</p>
+                <p className="text-lg text-gray-600 mb-2 font-medium">Founder, IntellCounselling</p>
                 <div className="flex items-center gap-2 text-[#25D366] font-medium mb-4">
                   <svg width="20" height="20" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#25D366" opacity="0.15"/><path d="M8 13l2.5 2.5L16 10" stroke="#25D366" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
                   Licensed Clinical Psychologist · 5+ Years Experience 
