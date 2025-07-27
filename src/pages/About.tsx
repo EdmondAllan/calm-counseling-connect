@@ -125,11 +125,6 @@ const About = () => {
             <div className="p-8">
               <div className="flex flex-col md:flex-row gap-8">
                 <div className="md:w-1/3">
-                  <img 
-                    src="/intellcounsellinglogoforweb.png" 
-                    alt="Dr. P. Priyanka" 
-                    className="rounded-lg w-full h-auto object-cover shadow-lg"
-                  />
                 </div>
                 <div className="md:w-2/3">
                   <h3 className="text-2xl font-semibold text-[#4285F4] mb-4">Dr. P. Priyanka</h3>
