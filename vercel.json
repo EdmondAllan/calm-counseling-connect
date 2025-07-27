@@ -6,23 +6,21 @@
       "config": { 
         "distDir": "dist",
         "installCommand": "npm install --platform=linux --arch=x64",
-        "buildCommand": "node vercel-build.js"
+        "buildCommand": "npm run build:vercel"
       }
     },
     {
       "src": "api/**/*.ts",
-      "use": "@vercel/node"
+      "use": "@vercel/node",
+      "config": {
+        "runtime": "nodejs18.x"
+      }
     }
   ],
   "rewrites": [
     { "source": "/api/(.*)", "destination": "/api/$1" },
     { "source": "/(.*)", "destination": "/index.html" }
   ],
-  "functions": {
-    "api/**/*.ts": {
-      "runtime": "nodejs18.x"
-    }
-  },
   "env": {
     "ROLLUP_SKIP_NATIVE": "true"
   }
