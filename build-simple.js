@@ -17,7 +17,7 @@ try {
     execSync('cp -r public/* dist/', { stdio: 'inherit' });
   }
   
-  // Build with esbuild - using iife format for better compatibility
+  // Build with esbuild - using iife format with proper externals
   const esbuildCommand = [
     'npx esbuild src/main.tsx',
     '--bundle',
@@ -29,7 +29,9 @@ try {
     '--sourcemap',
     '--loader:.tsx=tsx',
     '--loader:.ts=ts',
-    '--loader:.css=css'
+    '--loader:.css=css',
+    '--external:react',
+    '--external:react-dom'
   ].join(' ');
   
   console.log('Running esbuild...');
@@ -44,10 +46,16 @@ try {
   // Read the original HTML file
   let htmlContent = fs.readFileSync('index.html', 'utf8');
   
-  // Replace the script reference
+  // Add React and ReactDOM CDN links before the main script
+  const reactCDN = `
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  `;
+  
+  // Replace the script reference and add React CDN
   htmlContent = htmlContent.replace(
     '<script type="module" src="/src/main.tsx"></script>',
-    '<script src="/main.js"></script>'
+    reactCDN + '<script src="/main.js"></script>'
   );
   
   // Write the updated HTML to dist
