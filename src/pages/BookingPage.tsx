@@ -198,7 +198,12 @@ const BookingPage = () => {
   }
 
   const handleSelectChange = (name: string, value: string) => {
-    setBooking(prev => ({ ...prev, [name]: value }))
+    // If the counseling type is being changed, set the session fee to 1000 for all types
+    if (name === 'counselingType') {
+      setBooking(prev => ({ ...prev, counselingType: value, sessionFee: '1000' }));
+    } else {
+      setBooking(prev => ({ ...prev, [name]: value }));
+    }
   }
 
   const handleDateSelect = (date: Date | undefined) => {
