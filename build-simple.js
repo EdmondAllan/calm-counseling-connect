@@ -29,8 +29,7 @@ try {
     '--sourcemap',
     '--loader:.tsx=tsx',
     '--loader:.ts=ts',
-    '--loader:.css=css',
-    '--outfile=dist/main.js'
+    '--loader:.css=css'
   ].join(' ');
   
   console.log('Running esbuild...');
