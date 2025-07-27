@@ -8,7 +8,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "build:vercel": "cross-env ROLLUP_SKIP_NATIVE=true vite build --mode production",
+    "build:vercel": "cross-env ROLLUP_SKIP_NATIVE=true VITE_SKIP_NATIVE=true vite build --mode production",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
     "preview": "vite preview"
@@ -89,5 +89,10 @@
     "typescript": "^5.5.3",
     "typescript-eslint": "^8.0.1",
     "vite": "^5.4.19"
+  },
+  "overrides": {
+    "rollup": {
+      "optionalDependencies": {}
+    }
   }
 }
