@@ -39,6 +39,20 @@ try {
     });
   }
   
+  // Also process component CSS files
+  const cssFiles = [
+    'src/components/Footer.css',
+    'src/components/WhatsAppFloatButton.css'
+  ];
+  
+  cssFiles.forEach(cssFile => {
+    if (fs.existsSync(cssFile)) {
+      console.log(`Processing ${cssFile}...`);
+      const outputFile = `dist/${path.basename(cssFile)}`;
+      fs.copyFileSync(cssFile, outputFile);
+    }
+  });
+  
   // Build with esbuild directly - using IIFE format for better React compatibility
   const esbuildCommand = [
     'npx esbuild src/main.tsx',
@@ -71,6 +85,7 @@ try {
   // Add React CDN links and CSS before the main script
   const reactCDN = `
     <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/Footer.css">
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
   `;
