@@ -27,10 +27,16 @@ try {
     fs.copyFileSync('index.html', 'dist/index.html');
   }
   
-  // Copy CSS file directly
+  // Process CSS with Tailwind
   if (fs.existsSync('src/index.css')) {
-    console.log('Copying CSS file...');
-    fs.copyFileSync('src/index.css', 'dist/styles.css');
+    console.log('Processing CSS with Tailwind...');
+    execSync('npx tailwindcss -i src/index.css -o dist/styles.css --minify --config tailwind.config.ts', { 
+      stdio: 'inherit',
+      env: {
+        ...process.env,
+        NODE_ENV: 'production'
+      }
+    });
   }
   
   // Build with esbuild directly - using IIFE format for better React compatibility
@@ -44,7 +50,8 @@ try {
     '--minify',
     '--sourcemap',
     '--loader:.tsx=tsx',
-    '--loader:.ts=ts'
+    '--loader:.ts=ts',
+    '--loader:.css=css'
   ].join(' ');
   
   console.log('Running esbuild...');
