@@ -142,13 +142,14 @@ const PaymentGateway: React.FC<PaymentGatewayProps> = ({ bookingData }) => {
       }
 
       // Check if Razorpay key is configured
-      if (!import.meta.env.VITE_RAZORPAY_KEY_ID) {
+      const razorpayKey = typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_RAZORPAY_KEY_ID;
+      if (!razorpayKey) {
         throw new Error('Razorpay key is not configured');
       }
 
       // Initialize Razorpay with proper order ID from backend
       const options = {
-        key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+        key: razorpayKey,
         amount: order.amount, // Amount from the order
         currency: order.currency,
         name: 'Intell Counseling Services',

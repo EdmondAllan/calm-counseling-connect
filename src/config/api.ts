@@ -1,7 +1,9 @@
 // API configuration for different environments
 
-// Determine if we're in development or production
-const isDevelopment = import.meta.env.MODE === 'development';
+// Determine if we're in development or production with proper fallbacks
+const isDevelopment = typeof import.meta !== 'undefined' && 
+                     import.meta.env && 
+                     import.meta.env.MODE === 'development';
 
 // Base URL for API calls
 export const API_BASE_URL = isDevelopment 
