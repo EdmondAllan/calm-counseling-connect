@@ -5,7 +5,8 @@ import { RAZORPAY_ENDPOINTS } from '../config/api';
 
 // Configure axios
 // Don't set a global baseURL as it might affect other requests
-axios.defaults.headers.common['Content-Type'] = 'application/json';
+// Remove global Content-Type header to avoid CORS preflight issues
+// axios.defaults.headers.common['Content-Type'] = 'application/json';
 axios.defaults.withCredentials = false; // Set to true if using cookies
 
 // Define Razorpay API endpoint
@@ -119,6 +120,10 @@ const PaymentGateway: React.FC<PaymentGatewayProps> = ({ bookingData }) => {
             mode: bookingData.mode,
             duration: bookingData.duration,
             fee: bookingData.fee
+          }
+        }, {
+          headers: {
+            'Content-Type': 'application/json'
           }
         });
         console.log('API response received:', orderResponse);
