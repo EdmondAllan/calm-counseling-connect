@@ -13,14 +13,21 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   res.setHeader('Access-Control-Allow-Credentials', 'true');
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
-  res.setHeader('Access-Control-Allow-Headers', 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Origin');
+  res.setHeader('Access-Control-Allow-Headers', 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Origin, Authorization');
+  res.setHeader('Access-Control-Max-Age', '86400');
 
   // Handle OPTIONS request for CORS preflight
   if (req.method === 'OPTIONS') {
+    console.log('Handling OPTIONS request in verify-payment');
     return res.status(200).end();
   }
   
+  // Log the request method and headers for debugging
+  console.log('Request method in verify-payment:', req.method);
+  console.log('Request headers in verify-payment:', req.headers);
+  
   if (req.method !== 'POST') {
+    console.log('Method not allowed in verify-payment:', req.method);
     return res.status(405).json({ error: 'Method not allowed' });
   }
 

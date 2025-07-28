@@ -9,6 +9,19 @@ import { RAZORPAY_ENDPOINTS } from '../config/api';
 // axios.defaults.headers.common['Content-Type'] = 'application/json';
 axios.defaults.withCredentials = false; // Set to true if using cookies
 
+// Configure axios for API requests
+const apiClient = axios.create({
+  headers: {
+    'Accept': 'application/json',
+    'Content-Type': 'application/json'
+  },
+  // Add request interceptor for debugging
+  transformRequest: [(data, headers) => {
+    console.log('Request headers being sent:', headers);
+    return JSON.stringify(data);
+  }]
+});
+
 // Define Razorpay API endpoint
 const RAZORPAY_API_URL = 'https://api.razorpay.com/v1/orders';
 
@@ -106,7 +119,31 @@ const PaymentGateway: React.FC<PaymentGatewayProps> = ({ bookingData }) => {
       console.log('Sending request to:', apiUrl);
       let orderResponse;
       try {
-        orderResponse = await axios.post(apiUrl, {
+        // Log the full request details for debugging
+        console.log('Full request details:', {
+          url: apiUrl,
+          method: 'POST',
+          data: {
+            amount: amount,
+            currency: 'INR',
+            receipt: receiptId,
+            bookingData: {
+              clientName: bookingData.clientName,
+              phoneNumber: bookingData.phoneNumber,
+              serviceName: bookingData.serviceName,
+              serviceType: bookingData.serviceType,
+              date: bookingData.date,
+              time: bookingData.time,
+              mode: bookingData.mode,
+              duration: bookingData.duration,
+              fee: bookingData.fee
+            }
+          }
+        });
+        
+        // Try using fetch instead of axios as an alternative approach
+        console.log('Attempting to use fetch API instead of axios');
+        const requestData = {
           amount: amount,
           currency: 'INR',
           receipt: receiptId,
@@ -121,11 +158,25 @@ const PaymentGateway: React.FC<PaymentGatewayProps> = ({ bookingData }) => {
             duration: bookingData.duration,
             fee: bookingData.fee
           }
-        }, {
+        };
+        
+        const fetchResponse = await fetch(apiUrl, {
+          method: 'POST',
           headers: {
-            'Content-Type': 'application/json'
-          }
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify(requestData)
         });
+        
+        if (!fetchResponse.ok) {
+          console.error('Fetch request failed with status:', fetchResponse.status);
+          console.error('Fetch response status text:', fetchResponse.statusText);
+          throw new Error(`Fetch request failed with status ${fetchResponse.status}: ${fetchResponse.statusText}`);
+        }
+        
+        const responseData = await fetchResponse.json();
+        orderResponse = { data: responseData };
         console.log('API response received:', orderResponse);
       } catch (apiError: any) {
         console.error('API request failed:', apiError);
@@ -166,12 +217,32 @@ const PaymentGateway: React.FC<PaymentGatewayProps> = ({ bookingData }) => {
             // Verify payment with backend using environment-aware configuration
             const verifyUrl = RAZORPAY_ENDPOINTS.verifyPayment;
             console.log('Sending verification request to:', verifyUrl);
-            const verificationResponse = await axios.post(verifyUrl, {
+            
+            // Use fetch for payment verification
+            const verifyData = {
               razorpay_payment_id: response.razorpay_payment_id,
               razorpay_order_id: response.razorpay_order_id,
               razorpay_signature: response.razorpay_signature,
               bookingData: bookingData
+            };
+            
+            const fetchVerifyResponse = await fetch(verifyUrl, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+              },
+              body: JSON.stringify(verifyData)
             });
+            
+            if (!fetchVerifyResponse.ok) {
+              console.error('Verification request failed with status:', fetchVerifyResponse.status);
+              console.error('Verification response status text:', fetchVerifyResponse.statusText);
+              throw new Error(`Verification request failed with status ${fetchVerifyResponse.status}`);
+            }
+            
+            const verificationResponseData = await fetchVerifyResponse.json();
+            const verificationResponse = { data: verificationResponseData };
 
             if (verificationResponse.data.success) {
               // Payment verified successfully
@@ -224,32 +295,69 @@ const PaymentGateway: React.FC<PaymentGatewayProps> = ({ bookingData }) => {
       // Send notification to client using environment-aware configuration
       const whatsappUrl = RAZORPAY_ENDPOINTS.sendWhatsapp;
       console.log('Sending WhatsApp notification request to:', whatsappUrl);
-      const clientResponse = await axios.post(whatsappUrl, {
+      
+      // Use fetch for client WhatsApp notification
+      const clientData = {
         bookingData: bookingData,
         type: 'client'
+      };
+      
+      const clientFetchResponse = await fetch(whatsappUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify(clientData)
       });
       
-      if (clientResponse.data.success) {
-        console.log('Client WhatsApp notification sent successfully');
-        // Open WhatsApp for client if user allows popups
-        if (clientResponse.data.whatsappUrl) {
-          window.open(clientResponse.data.whatsappUrl, '_blank');
+      if (!clientFetchResponse.ok) {
+        console.error('Client WhatsApp notification failed with status:', clientFetchResponse.status);
+        console.error('Client WhatsApp notification status text:', clientFetchResponse.statusText);
+      } else {
+        const clientResponseData = await clientFetchResponse.json();
+        const clientResponse = { data: clientResponseData };
+        
+        if (clientResponse.data.success) {
+          console.log('Client WhatsApp notification sent successfully');
+          // Open WhatsApp for client if user allows popups
+          if (clientResponse.data.whatsappUrl) {
+            window.open(clientResponse.data.whatsappUrl, '_blank');
+          }
         }
       }
       
       // Send notification to counselor using environment-aware configuration
-      const counselorResponse = await axios.post(RAZORPAY_ENDPOINTS.sendWhatsapp, {
+      // Use fetch for counselor WhatsApp notification
+      const counselorData = {
         bookingData: bookingData,
         type: 'counselor'
+      };
+      
+      const counselorFetchResponse = await fetch(whatsappUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify(counselorData)
       });
       
-      if (counselorResponse.data.success) {
-        console.log('Counselor WhatsApp notification sent successfully');
-        // Open WhatsApp for counselor if user allows popups
-        if (counselorResponse.data.whatsappUrl) {
-          setTimeout(() => {
-            window.open(counselorResponse.data.whatsappUrl, '_blank');
-          }, 1000);
+      if (!counselorFetchResponse.ok) {
+        console.error('Counselor WhatsApp notification failed with status:', counselorFetchResponse.status);
+        console.error('Counselor WhatsApp notification status text:', counselorFetchResponse.statusText);
+      } else {
+        const counselorResponseData = await counselorFetchResponse.json();
+        const counselorResponse = { data: counselorResponseData };
+        
+        if (counselorResponse.data.success) {
+          console.log('Counselor WhatsApp notification sent successfully');
+          // Open WhatsApp for counselor if user allows popups
+          if (counselorResponse.data.whatsappUrl) {
+            setTimeout(() => {
+              window.open(counselorResponse.data.whatsappUrl, '_blank');
+            }, 1000);
+          }
         }
       }
       

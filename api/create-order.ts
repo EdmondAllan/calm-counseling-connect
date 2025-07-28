@@ -16,15 +16,42 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   res.setHeader('Access-Control-Allow-Credentials', 'true');
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
-  res.setHeader('Access-Control-Allow-Headers', 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Origin');
+  res.setHeader('Access-Control-Allow-Headers', 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Origin, Authorization');
+  res.setHeader('Access-Control-Max-Age', '86400');
 
   // Handle OPTIONS request for CORS preflight
   if (req.method === 'OPTIONS') {
+    console.log('Handling OPTIONS request');
     return res.status(200).end();
   }
   
+  // Log the request method and headers for debugging
+  console.log('Request method in create-order:', req.method);
+  console.log('Request headers in create-order:', JSON.stringify(req.headers, null, 2));
+  console.log('Request body in create-order:', JSON.stringify(req.body, null, 2));
+  console.log('Request URL in create-order:', req.url);
+  console.log('Request path in create-order:', req.url ? req.url.split('?')[0] : 'unknown');
+  
+  // Check if the request method is POST
   if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
+    console.log('Method not allowed in create-order:', req.method);
+    // Return a more detailed error response
+    return res.status(405).json({ 
+      error: 'Method not allowed', 
+      message: `Expected POST but received ${req.method}`,
+      allowedMethods: ['POST']
+    });
+  }
+  
+  // Check if Content-Type is application/json
+  const contentType = req.headers['content-type'];
+  if (!contentType || !contentType.includes('application/json')) {
+    console.log('Invalid Content-Type in create-order:', contentType);
+    return res.status(415).json({ 
+      error: 'Unsupported Media Type', 
+      message: 'Content-Type must be application/json',
+      receivedContentType: contentType || 'none'
+    });
   }
 
   try {
