@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import Razorpay from 'razorpay';
+const Razorpay = require('razorpay');
 
 // Debug environment variables
 console.log('Environment check:', {
