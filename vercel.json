@@ -1,11 +1,17 @@
 {
-  "buildCommand": "npm run build",
-  "outputDirectory": "dist",
-  "functions": {
-    "api/*.ts": {
-      "runtime": "nodejs18.x"
+  "builds": [
+    {
+      "src": "api/**/*.ts",
+      "use": "@vercel/node@3.0.7"
+    },
+    {
+      "src": "package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "dist"
+      }
     }
-  },
+  ],
   "rewrites": [
     { "source": "/(.*)", "destination": "/index.html" }
   ],
