@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 
 // Custom build script for Vercel that completely bypasses rollup
-const { execSync } = require('child_process');
-const fs = require('fs');
-const path = require('path');
+import { execSync } from 'child_process';
+import fs from 'fs';
+import path from 'path';
 
 try {
   console.log('Starting custom build without rollup...');
@@ -55,4 +55,4 @@ try {
 } catch (error) {
   console.error('Build failed:', error.message);
   process.exit(1);
-} 
+}
