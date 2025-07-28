@@ -6,9 +6,8 @@ const isDevelopment = typeof import.meta !== 'undefined' &&
                      import.meta.env.MODE === 'development';
 
 // Base URL for API calls
-export const API_BASE_URL = isDevelopment 
-  ? 'http://localhost:4000/api' // Development - local API server
-  : '/api'; // Production - Vercel serverless functions
+// Always use the local API server in development mode
+export const API_BASE_URL = 'http://localhost:4000/api'; // Use local API server
 
 // Razorpay API endpoints
 export const RAZORPAY_ENDPOINTS = {
