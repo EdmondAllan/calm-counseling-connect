@@ -39,9 +39,7 @@ const Contact = () => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    const apiUrl = import.meta.env.DEV
-      ? '/api/mail/contact' // Using proxy in dev
-      : '/api/mail/contact'; // Same for production
+    const apiUrl = import.meta.env.MODE === 'development';
 
     try {
       const response = await fetch(apiUrl, {
