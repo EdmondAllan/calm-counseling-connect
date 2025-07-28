@@ -1,6 +1,13 @@
 {
   "builds": [
     {
+      "src": "api/**/*.ts",
+      "use": "@vercel/node",
+      "config": {
+        "runtime": "nodejs18.x"
+      }
+    },
+    {
       "src": "package.json",
       "use": "@vercel/static-build",
       "config": { 
@@ -8,17 +15,9 @@
         "installCommand": "rm -rf node_modules package-lock.json && npm install --platform=linux --arch=x64",
         "buildCommand": "npm run build"
       }
-    },
-    {
-      "src": "api/**/*.ts",
-      "use": "@vercel/node",
-      "config": {
-        "runtime": "nodejs18.x"
-      }
     }
   ],
   "rewrites": [
-    { "source": "/api/(.*)", "destination": "/api/$1" },
     { "source": "/(.*)", "destination": "/index.html" }
   ],
   "headers": [
