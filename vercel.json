@@ -1,6 +1,13 @@
 {
   "builds": [
     {
+      "src": "pages/api/**/*.js",
+      "use": "@vercel/node",
+      "config": {
+        "runtime": "nodejs18.x"
+      }
+    },
+    {
       "src": "api/**/*.ts",
       "use": "@vercel/node",
       "config": {
