@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { RAZORPAY_ENDPOINTS } from '../config/api';
 
 // Configure axios
 // Don't set a global baseURL as it might affect other requests
@@ -99,8 +100,8 @@ const PaymentGateway: React.FC<PaymentGatewayProps> = ({ bookingData }) => {
 
       console.log('Creating order with amount:', amountInPaise);
 
-      // Create order using backend API
-      const apiUrl = 'http://localhost:4000/api/create-order';
+      // Create order using backend API with environment-aware configuration
+      const apiUrl = RAZORPAY_ENDPOINTS.createOrder;
       console.log('Sending request to:', apiUrl);
       let orderResponse;
       try {
@@ -140,9 +141,14 @@ const PaymentGateway: React.FC<PaymentGatewayProps> = ({ bookingData }) => {
         throw new Error('Razorpay not loaded. Please refresh the page and try again.');
       }
 
+      // Check if Razorpay key is configured
+      if (!import.meta.env.VITE_RAZORPAY_KEY_ID) {
+        throw new Error('Razorpay key is not configured');
+      }
+
       // Initialize Razorpay with proper order ID from backend
       const options = {
-        key: 'rzp_test_GdNMxJUMabbgM9',
+        key: import.meta.env.VITE_RAZORPAY_KEY_ID,
         amount: order.amount, // Amount from the order
         currency: order.currency,
         name: 'Intell Counseling Services',
@@ -151,8 +157,8 @@ const PaymentGateway: React.FC<PaymentGatewayProps> = ({ bookingData }) => {
         handler: async function (response: any) {
           console.log('Payment successful:', response);
           try {
-            // Verify payment with backend
-            const verifyUrl = 'http://localhost:4000/api/verify-payment';
+            // Verify payment with backend using environment-aware configuration
+            const verifyUrl = RAZORPAY_ENDPOINTS.verifyPayment;
             console.log('Sending verification request to:', verifyUrl);
             const verificationResponse = await axios.post(verifyUrl, {
               razorpay_payment_id: response.razorpay_payment_id,
@@ -209,8 +215,8 @@ const PaymentGateway: React.FC<PaymentGatewayProps> = ({ bookingData }) => {
     try {
       console.log('Sending WhatsApp notifications for booking:', bookingData);
       
-      // Send notification to client
-      const whatsappUrl = 'http://localhost:4000/api/send-whatsapp';
+      // Send notification to client using environment-aware configuration
+      const whatsappUrl = RAZORPAY_ENDPOINTS.sendWhatsapp;
       console.log('Sending WhatsApp notification request to:', whatsappUrl);
       const clientResponse = await axios.post(whatsappUrl, {
         bookingData: bookingData,
@@ -225,8 +231,8 @@ const PaymentGateway: React.FC<PaymentGatewayProps> = ({ bookingData }) => {
         }
       }
       
-      // Send notification to counselor using the same URL
-      const counselorResponse = await axios.post('http://localhost:4000/api/send-whatsapp', {
+      // Send notification to counselor using environment-aware configuration
+      const counselorResponse = await axios.post(RAZORPAY_ENDPOINTS.sendWhatsapp, {
         bookingData: bookingData,
         type: 'counselor'
       });
