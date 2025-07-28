@@ -6,8 +6,8 @@ const isDevelopment = typeof import.meta !== 'undefined' &&
                      import.meta.env.MODE === 'development';
 
 // Base URL for API calls
-// Always use the local API server in development mode
-export const API_BASE_URL = 'http://localhost:4000/api'; // Use local API server
+// Use relative URLs to avoid CORS and ad-blocker issues
+export const API_BASE_URL = '/api';
 
 // Razorpay API endpoints
 export const RAZORPAY_ENDPOINTS = {

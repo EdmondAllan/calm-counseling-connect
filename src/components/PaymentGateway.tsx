@@ -141,8 +141,7 @@ const PaymentGateway: React.FC<PaymentGatewayProps> = ({ bookingData }) => {
           }
         });
         
-        // Try using fetch instead of axios as an alternative approach
-        console.log('Attempting to use fetch API instead of axios');
+        // Use axios with credentials and proper error handling
         const requestData = {
           amount: amount,
           currency: 'INR',
@@ -160,24 +159,42 @@ const PaymentGateway: React.FC<PaymentGatewayProps> = ({ bookingData }) => {
           }
         };
         
-        const fetchResponse = await fetch(apiUrl, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-          },
-          body: JSON.stringify(requestData)
-        });
-        
-        if (!fetchResponse.ok) {
-          console.error('Fetch request failed with status:', fetchResponse.status);
-          console.error('Fetch response status text:', fetchResponse.statusText);
-          throw new Error(`Fetch request failed with status ${fetchResponse.status}: ${fetchResponse.statusText}`);
+        // Try axios first with proper error handling
+        try {
+          const axiosResponse = await axios.post(apiUrl, requestData, {
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+            },
+            withCredentials: false
+          });
+          
+          orderResponse = axiosResponse;
+          console.log('Axios API response received:', orderResponse);
+        } catch (axiosError) {
+          console.log('Axios request failed, falling back to fetch');
+          
+          // Fallback to fetch if axios fails
+          const fetchResponse = await fetch(apiUrl, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+            },
+            credentials: 'omit', // Don't send cookies to avoid CORS issues
+            body: JSON.stringify(requestData)
+          });
+          
+          if (!fetchResponse.ok) {
+            console.error('Fetch request failed with status:', fetchResponse.status);
+            console.error('Fetch response status text:', fetchResponse.statusText);
+            throw new Error(`Fetch request failed with status ${fetchResponse.status}: ${fetchResponse.statusText}`);
+          }
+          
+          const responseData = await fetchResponse.json();
+          orderResponse = { data: responseData };
+          console.log('Fetch API response received:', orderResponse);
         }
-        
-        const responseData = await fetchResponse.json();
-        orderResponse = { data: responseData };
-        console.log('API response received:', orderResponse);
       } catch (apiError: any) {
         console.error('API request failed:', apiError);
         console.error('Error details:', apiError.response ? apiError.response.data : 'No response data');
@@ -218,7 +235,7 @@ const PaymentGateway: React.FC<PaymentGatewayProps> = ({ bookingData }) => {
             const verifyUrl = RAZORPAY_ENDPOINTS.verifyPayment;
             console.log('Sending verification request to:', verifyUrl);
             
-            // Use fetch for payment verification
+            // Prepare verification data
             const verifyData = {
               razorpay_payment_id: response.razorpay_payment_id,
               razorpay_order_id: response.razorpay_order_id,
@@ -226,23 +243,44 @@ const PaymentGateway: React.FC<PaymentGatewayProps> = ({ bookingData }) => {
               bookingData: bookingData
             };
             
-            const fetchVerifyResponse = await fetch(verifyUrl, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-              },
-              body: JSON.stringify(verifyData)
-            });
+            let verificationResponse;
             
-            if (!fetchVerifyResponse.ok) {
-              console.error('Verification request failed with status:', fetchVerifyResponse.status);
-              console.error('Verification response status text:', fetchVerifyResponse.statusText);
-              throw new Error(`Verification request failed with status ${fetchVerifyResponse.status}`);
+            // Try axios first with proper error handling
+            try {
+              const axiosVerifyResponse = await axios.post(verifyUrl, verifyData, {
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Accept': 'application/json'
+                },
+                withCredentials: false
+              });
+              
+              verificationResponse = axiosVerifyResponse;
+              console.log('Axios verification response received:', verificationResponse);
+            } catch (axiosError) {
+              console.log('Axios verification request failed, falling back to fetch');
+              
+              // Fallback to fetch if axios fails
+              const fetchVerifyResponse = await fetch(verifyUrl, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Accept': 'application/json'
+                },
+                credentials: 'omit', // Don't send cookies to avoid CORS issues
+                body: JSON.stringify(verifyData)
+              });
+              
+              if (!fetchVerifyResponse.ok) {
+                console.error('Verification request failed with status:', fetchVerifyResponse.status);
+                console.error('Verification response status text:', fetchVerifyResponse.statusText);
+                throw new Error(`Verification request failed with status ${fetchVerifyResponse.status}`);
+              }
+              
+              const verificationResponseData = await fetchVerifyResponse.json();
+              verificationResponse = { data: verificationResponseData };
+              console.log('Fetch verification response received:', verificationResponse);
             }
-            
-            const verificationResponseData = await fetchVerifyResponse.json();
-            const verificationResponse = { data: verificationResponseData };
 
             if (verificationResponse.data.success) {
               // Payment verified successfully
@@ -296,69 +334,125 @@ const PaymentGateway: React.FC<PaymentGatewayProps> = ({ bookingData }) => {
       const whatsappUrl = RAZORPAY_ENDPOINTS.sendWhatsapp;
       console.log('Sending WhatsApp notification request to:', whatsappUrl);
       
-      // Use fetch for client WhatsApp notification
+      // Prepare client data
       const clientData = {
         bookingData: bookingData,
         type: 'client'
       };
       
-      const clientFetchResponse = await fetch(whatsappUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
-        body: JSON.stringify(clientData)
-      });
-      
-      if (!clientFetchResponse.ok) {
-        console.error('Client WhatsApp notification failed with status:', clientFetchResponse.status);
-        console.error('Client WhatsApp notification status text:', clientFetchResponse.statusText);
-      } else {
-        const clientResponseData = await clientFetchResponse.json();
-        const clientResponse = { data: clientResponseData };
-        
-        if (clientResponse.data.success) {
-          console.log('Client WhatsApp notification sent successfully');
-          // Open WhatsApp for client if user allows popups
-          if (clientResponse.data.whatsappUrl) {
+      // Try to send client notification
+      try {
+        // Try axios first
+        try {
+          const clientAxiosResponse = await axios.post(whatsappUrl, clientData, {
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+            },
+            withCredentials: false
+          });
+          
+          const clientResponse = clientAxiosResponse;
+          console.log('Client WhatsApp notification sent successfully via axios');
+          
+          if (clientResponse.data.success && clientResponse.data.whatsappUrl) {
             window.open(clientResponse.data.whatsappUrl, '_blank');
           }
+        } catch (axiosError) {
+          // Fallback to fetch
+          console.log('Axios client notification failed, falling back to fetch');
+          
+          const clientFetchResponse = await fetch(whatsappUrl, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+            },
+            credentials: 'omit',
+            body: JSON.stringify(clientData)
+          });
+          
+          if (!clientFetchResponse.ok) {
+            console.error('Client WhatsApp notification failed with status:', clientFetchResponse.status);
+            console.error('Client WhatsApp notification status text:', clientFetchResponse.statusText);
+          } else {
+            const clientResponseData = await clientFetchResponse.json();
+            const clientResponse = { data: clientResponseData };
+            
+            if (clientResponse.data.success) {
+              console.log('Client WhatsApp notification sent successfully via fetch');
+              // Open WhatsApp for client if user allows popups
+              if (clientResponse.data.whatsappUrl) {
+                window.open(clientResponse.data.whatsappUrl, '_blank');
+              }
+            }
+          }
         }
+      } catch (clientError) {
+        console.error('Failed to send client WhatsApp notification:', clientError);
+        // Continue with counselor notification even if client notification fails
       }
       
-      // Send notification to counselor using environment-aware configuration
-      // Use fetch for counselor WhatsApp notification
+      // Send notification to counselor
       const counselorData = {
         bookingData: bookingData,
         type: 'counselor'
       };
       
-      const counselorFetchResponse = await fetch(whatsappUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
-        body: JSON.stringify(counselorData)
-      });
-      
-      if (!counselorFetchResponse.ok) {
-        console.error('Counselor WhatsApp notification failed with status:', counselorFetchResponse.status);
-        console.error('Counselor WhatsApp notification status text:', counselorFetchResponse.statusText);
-      } else {
-        const counselorResponseData = await counselorFetchResponse.json();
-        const counselorResponse = { data: counselorResponseData };
-        
-        if (counselorResponse.data.success) {
-          console.log('Counselor WhatsApp notification sent successfully');
-          // Open WhatsApp for counselor if user allows popups
-          if (counselorResponse.data.whatsappUrl) {
+      // Try to send counselor notification
+      try {
+        // Try axios first
+        try {
+          const counselorAxiosResponse = await axios.post(whatsappUrl, counselorData, {
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+            },
+            withCredentials: false
+          });
+          
+          const counselorResponse = counselorAxiosResponse;
+          console.log('Counselor WhatsApp notification sent successfully via axios');
+          
+          if (counselorResponse.data.success && counselorResponse.data.whatsappUrl) {
             setTimeout(() => {
               window.open(counselorResponse.data.whatsappUrl, '_blank');
             }, 1000);
           }
+        } catch (axiosError) {
+          // Fallback to fetch
+          console.log('Axios counselor notification failed, falling back to fetch');
+          
+          const counselorFetchResponse = await fetch(whatsappUrl, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+            },
+            credentials: 'omit',
+            body: JSON.stringify(counselorData)
+          });
+          
+          if (!counselorFetchResponse.ok) {
+            console.error('Counselor WhatsApp notification failed with status:', counselorFetchResponse.status);
+            console.error('Counselor WhatsApp notification status text:', counselorFetchResponse.statusText);
+          } else {
+            const counselorResponseData = await counselorFetchResponse.json();
+            const counselorResponse = { data: counselorResponseData };
+            
+            if (counselorResponse.data.success) {
+              console.log('Counselor WhatsApp notification sent successfully via fetch');
+              // Open WhatsApp for counselor if user allows popups
+              if (counselorResponse.data.whatsappUrl) {
+                setTimeout(() => {
+                  window.open(counselorResponse.data.whatsappUrl, '_blank');
+                }, 1000);
+              }
+            }
+          }
         }
+      } catch (counselorError) {
+        console.error('Failed to send counselor WhatsApp notification:', counselorError);
       }
       
     } catch (error) {
