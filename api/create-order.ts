@@ -1,8 +1,21 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-const Razorpay = require('razorpay');
+import Razorpay from 'razorpay';
+
+// Debug environment variables
+console.log('Environment check:', {
+  hasKeyId: !!process.env.RAZORPAY_KEY_ID,
+  hasKeySecret: !!process.env.RAZORPAY_KEY_SECRET,
+  keyIdLength: process.env.RAZORPAY_KEY_ID?.length || 0,
+  nodeEnv: process.env.NODE_ENV,
+  vercelEnv: process.env.VERCEL_ENV
+});
 
 // Initialize Razorpay with environment variables
 if (!process.env.RAZORPAY_KEY_ID || !process.env.RAZORPAY_KEY_SECRET) {
+  console.error('Razorpay environment variables are missing:', {
+    RAZORPAY_KEY_ID: !!process.env.RAZORPAY_KEY_ID,
+    RAZORPAY_KEY_SECRET: !!process.env.RAZORPAY_KEY_SECRET
+  });
   throw new Error('Razorpay environment variables are not configured');
 }
 

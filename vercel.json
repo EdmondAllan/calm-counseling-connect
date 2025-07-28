@@ -4,7 +4,8 @@
       "src": "api/**/*.ts",
       "use": "@vercel/node",
       "config": {
-        "runtime": "nodejs18.x"
+        "runtime": "nodejs18.x",
+        "includeFiles": "api/**"
       }
     },
     {
