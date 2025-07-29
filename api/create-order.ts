@@ -10,19 +10,25 @@ console.log('Environment check:', {
   vercelEnv: process.env.VERCEL_ENV
 });
 
-// Initialize Razorpay with environment variables
-if (!process.env.RAZORPAY_KEY_ID || !process.env.RAZORPAY_KEY_SECRET) {
-  console.error('Razorpay environment variables are missing:', {
-    RAZORPAY_KEY_ID: !!process.env.RAZORPAY_KEY_ID,
-    RAZORPAY_KEY_SECRET: !!process.env.RAZORPAY_KEY_SECRET
-  });
-  throw new Error('Razorpay environment variables are not configured');
-}
+let razorpay: any;
 
-const razorpay = new Razorpay({
-  key_id: process.env.RAZORPAY_KEY_ID,
-  key_secret: process.env.RAZORPAY_KEY_SECRET,
-});
+function getRazorpayInstance() {
+  if (razorpay) return razorpay;
+
+  if (!process.env.RAZORPAY_KEY_ID || !process.env.RAZORPAY_KEY_SECRET) {
+    console.error('Razorpay environment variables are missing:', {
+      RAZORPAY_KEY_ID: !!process.env.RAZORPAY_KEY_ID,
+      RAZORPAY_KEY_SECRET: !!process.env.RAZORPAY_KEY_SECRET
+    });
+    throw new Error('Razorpay environment variables are not configured');
+  }
+
+  razorpay = new Razorpay({
+    key_id: process.env.RAZORPAY_KEY_ID,
+    key_secret: process.env.RAZORPAY_KEY_SECRET,
+  });
+  return razorpay;
+}
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   console.log('=== CREATE ORDER API CALLED ===');
@@ -96,7 +102,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       bookingData
     });
 
-    const order = await razorpay.orders.create({
+    const rp = getRazorpayInstance();
+
+    const order = await rp.orders.create({
       amount: amountInPaise,
       currency: currency,
       receipt: receipt,
