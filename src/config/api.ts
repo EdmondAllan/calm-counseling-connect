@@ -6,8 +6,12 @@ const isDevelopment = typeof import.meta !== 'undefined' &&
                      import.meta.env.MODE === 'development';
 
 // Base URL for API calls
-// Use relative URLs to avoid CORS and ad-blocker issues
-export const API_BASE_URL = '/api';
+// In production we may host frontend and serverless API on different domains.
+// Allow overriding via VITE_API_BASE_URL; fall back to relative '/api' for local dev.
+export const API_BASE_URL =
+  typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_API_BASE_URL
+    ? import.meta.env.VITE_API_BASE_URL.replace(/\/$/, '') // strip trailing slash
+    : '/api';
 
 // Razorpay API endpoints
 export const RAZORPAY_ENDPOINTS = {
