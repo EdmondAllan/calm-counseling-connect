@@ -16,11 +16,11 @@ const FounderProfile = () => {
             <div className="flex flex-col md:flex-row items-center gap-12">
               {/* Left Section: Info */}
               <div className="flex-1 min-w-0">
-                <h3 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">Dr.Priyanka P</h3>
+                <h3 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">Priyanka R</h3>
                 <p className="text-lg text-gray-600 mb-2 font-medium">Founder, IntellCounselling</p>
                 <div className="flex items-center gap-2 text-[#25D366] font-medium mb-4">
                   <svg width="20" height="20" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#25D366" opacity="0.15"/><path d="M8 13l2.5 2.5L16 10" stroke="#25D366" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
-                  Licensed Clinical Psychologist · 5+ Years Experience 
+                  Licensed Clinical Psychologist · 6+ Years Experience 
                 </div>
                 <p className="text-gray-700 mb-6">
                   Transforming lives through compassionate counseling and evidence-based therapeutic approaches. Specializing in anxiety, depression, relationship issues, and personal growth.
@@ -36,7 +36,7 @@ const FounderProfile = () => {
                     <div className="text-gray-500 text-sm font-medium mt-1">Clients Helped</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-2xl md:text-3xl font-extrabold text-[#25D366]">5+</div>
+                    <div className="text-2xl md:text-3xl font-extrabold text-[#25D366]">6+</div>
                     <div className="text-gray-500 text-sm font-medium mt-1">Years Experience</div>
                   </div>
                   <div className="text-center">
