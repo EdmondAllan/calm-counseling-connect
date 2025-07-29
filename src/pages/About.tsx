@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Check } from "lucide-react";
+import FounderProfile from "@/components/FounderProfile";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -118,42 +119,7 @@ const About = () => {
       </motion.section>
 
       {/* Founder Profile - Carried over from original page */}
-      <section className="py-16 px-4 bg-gray-50">
-        <div className="container mx-auto">
-          <h2 className="text-3xl font-bold text-center text-gray-800 mb-8">Meet Our Founder</h2>
-          <div className="max-w-5xl mx-auto bg-white rounded-lg shadow-md overflow-hidden">
-            <div className="p-8">
-              <div className="flex flex-col md:flex-row gap-8">
-                <div className="md:w-1/3">
-                </div>
-                <div className="md:w-2/3">
-                  <h3 className="text-2xl font-semibold text-[#4285F4] mb-4">Dr. P. Priyanka</h3>
-                  <div className="space-y-4 text-gray-700 font-light">
-                    <p>
-                      Priyanka R., Founder of Intell Counselling, is a Counseling Psychologist with 5+ years of experience in emotional and behavioral wellness. She currently serves as Senior Student Counselor at Rajalakshmi Engineering College, where she supports students and faculty through academic, emotional, and life challenges.
-                    </p>
-                    <p className="italic text-[#4285F4]">
-                      “She has guided individuals from pre-teens finding their identity to adults healing from emotional trauma.”
-                    </p>
-                    <p>
-                      Her counseling spans academic stress, anxiety, depression, suicidal thoughts, addiction, healthcare-related trauma, and relationship conflicts across all age groups.
-                    </p>
-                    <p className="italic text-[#4285F4]">
-                      “What sets her apart is her ability to turn insight into action — and emotion into clarity.”
-                    </p>
-                    <p>
-                      She has led numerous workshops on emotional intelligence, digital discipline, stress management, and more — making mental health approachable and actionable.
-                    </p>
-                    <p className="italic text-[#4285F4]">
-                      “Her mission is simple — to help people feel lighter, think clearer, and live fuller.”
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      <FounderProfile />
     </div>
   );
 };
