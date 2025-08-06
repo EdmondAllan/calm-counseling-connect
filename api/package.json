@@ -1,0 +1,13 @@
+{
+  "name": "calm-counseling-api",
+  "version": "1.0.0",
+  "description": "API endpoints for Calm Counseling Connect",
+  "main": "index.js",
+  "dependencies": {
+    "@vercel/node": "^3.2.0",
+    "razorpay": "^2.9.4"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
