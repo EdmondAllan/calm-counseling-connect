@@ -186,20 +186,20 @@ const PaymentGateway: React.FC<PaymentGatewayProps> = ({ bookingData }) => {
           });
           
           if (!fetchResponse.ok) {
-            console.error('Fetch request failed with status:', fetchResponse.status);
-            console.error('Fetch response status text:', fetchResponse.statusText);
-            throw new Error(`Fetch request failed with status ${fetchResponse.status}: ${fetchResponse.statusText}`);
+            const fallbackText = await fetchResponse.text().catch(() => '');
+            throw new Error(`HTTP ${fetchResponse.status} ${fetchResponse.statusText || ''} ${fallbackText}`.trim());
           }
-          
+
           const responseData = await fetchResponse.json();
           orderResponse = { data: responseData };
           console.log('Fetch API response received:', orderResponse);
         }
       } catch (apiError: any) {
         console.error('API request failed:', apiError);
-        console.error('Error details:', apiError.response ? apiError.response.data : 'No response data');
-        console.error('Error status:', apiError.response ? apiError.response.status : 'No status');
-        throw new Error(`API request failed: ${apiError.message}`);
+        const status = apiError.response?.status || (apiError.message.match(/HTTP (\d{3})/)?.[1] ?? 'network');
+        setError(`Unable to reach payment service (status: ${status}). Please try again later.`);
+        setIsLoading(false);
+        return;
       }
 
       if (!orderResponse || !orderResponse.data.success || !orderResponse.data.order) {
@@ -272,9 +272,8 @@ const PaymentGateway: React.FC<PaymentGatewayProps> = ({ bookingData }) => {
               });
               
               if (!fetchVerifyResponse.ok) {
-                console.error('Verification request failed with status:', fetchVerifyResponse.status);
-                console.error('Verification response status text:', fetchVerifyResponse.statusText);
-                throw new Error(`Verification request failed with status ${fetchVerifyResponse.status}`);
+                const fallbackText = await fetchVerifyResponse.text().catch(() => '');
+                throw new Error(`HTTP ${fetchVerifyResponse.status} ${fetchVerifyResponse.statusText || ''} ${fallbackText}`.trim());
               }
               
               const verificationResponseData = await fetchVerifyResponse.json();
@@ -321,7 +320,7 @@ const PaymentGateway: React.FC<PaymentGatewayProps> = ({ bookingData }) => {
       
     } catch (error: any) {
       console.error('Payment error:', error);
-      setError(error.message || 'Payment failed');
+      setError(error?.message || 'Payment failed. Please try again.');
       setIsLoading(false);
     }
   };

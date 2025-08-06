@@ -7,9 +7,14 @@ const Razorpay = require('razorpay');
 const app = express();
 const PORT = 4000;
 
-// Razorpay test keys
-const RAZORPAY_KEY_ID = 'rzp_test_GdNMxJUMabbgM9';
-const RAZORPAY_KEY_SECRET = '3OcDxO5NFLXZxdhamNufc6pj';
+// Razorpay keys – use environment variables if present (recommended for production)
+const RAZORPAY_KEY_ID = process.env.RAZORPAY_KEY_ID || 'rzp_test_GdNMxJUMabbgM9';
+const RAZORPAY_KEY_SECRET = process.env.RAZORPAY_KEY_SECRET || '3OcDxO5NFLXZxdhamNufc6pj';
+
+if (!process.env.RAZORPAY_KEY_ID || !process.env.RAZORPAY_KEY_SECRET) {
+  console.warn('⚠️  Using fallback TEST Razorpay keys because environment variables are not set.');
+  console.warn('     Set RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET for live payments.');
+}
 
 // Initialize Razorpay
 const razorpay = new Razorpay({
