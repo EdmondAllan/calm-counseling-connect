@@ -64,7 +64,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     console.log('Method not allowed in create-order:', req.method);
     // Return a more detailed error response
     return res.status(405).json({ 
-      error: 'Method not allowed', 
+      error: 'Method not alloweds', 
       message: `Expected POST but received ${req.method}`,
       allowedMethods: ['POST']
     });
