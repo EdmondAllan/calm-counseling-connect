@@ -19,11 +19,10 @@ function getApiBaseUrl(): string {
   if (typeof window !== 'undefined') {
     const { hostname } = window.location;
 
-    // If we are on the intellcounseling.in domain, the static pages are served via cPanel
-    // while the API is hosted separately on Vercel. Point to the Vercel deployment
-    // (make sure you have added the correct custom domain for the API project if you change this).
+    // If we are on the intellcounseling domain, assume the same domain hosts the
+    // serverless functions on the /api path (custom domain attached to Vercel project).
     if (hostname.includes('intellcounseling')) {
-      return 'https://calm-counseling-connect.vercel.app/api';
+      return `https://${hostname}/api`;
     }
   }
 
