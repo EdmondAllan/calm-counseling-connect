@@ -15,5 +15,4 @@ eslint.config.js
 tailwind.config.ts
 vite.config.ts
 webpack.config.js
-build-*.js
 vercel-build.js
