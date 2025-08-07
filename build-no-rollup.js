@@ -85,7 +85,7 @@ try {
     '--loader:.tsx=tsx',
     '--loader:.ts=ts',
     '--loader:.css=css',
-    '--alias:@/*=src/*'
+    '--tsconfig=tsconfig.json'
   ].join(' ');
   
   console.log('Running esbuild...');
