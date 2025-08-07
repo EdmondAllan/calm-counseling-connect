@@ -1,6 +1,11 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 const Razorpay = require('razorpay');
 
+// Ensure this is treated as a serverless function
+export const config = {
+  runtime: 'nodejs20.x',
+};
+
 // Debug environment variables
 console.log('Environment check:', {
   hasKeyId: !!process.env.RAZORPAY_KEY_ID,
@@ -64,7 +69,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     console.log('Method not allowed in create-order:', req.method);
     // Return a more detailed error response
     return res.status(405).json({ 
-      error: 'Method not alloweds', 
+      error: 'Method not allowed', 
       message: `Expected POST but received ${req.method}`,
       allowedMethods: ['POST']
     });

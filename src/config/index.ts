@@ -1,6 +1,6 @@
 export const config = {
   api: {
-    baseURL: (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_API_BASE_URL) || '/api',
+    baseURL: (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.API_BASE_URL) || '/api',
     timeout: 10000,
   },
   app: {

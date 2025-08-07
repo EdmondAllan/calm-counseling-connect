@@ -15,8 +15,8 @@ const ApiExample = () => {
   const { isAuthenticated, user } = useAuth();
   
   // API hooks
-  const { data: services, isLoading: servicesLoading, error: servicesError } = useGetServicesQuery();
-  const { data: counselors, isLoading: counselorsLoading, error: counselorsError } = useGetCounselorsQuery();
+  const { data: services, isLoading: servicesLoading, error: servicesError } = useGetServicesQuery(undefined);
+  const { data: counselors, isLoading: counselorsLoading, error: counselorsError } = useGetCounselorsQuery(undefined);
   const { data: appointments, isLoading: appointmentsLoading } = useGetUserAppointmentsQuery(undefined, {
     skip: !isAuthenticated
   });
