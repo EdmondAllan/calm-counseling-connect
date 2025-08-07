@@ -84,7 +84,8 @@ try {
     '--sourcemap',
     '--loader:.tsx=tsx',
     '--loader:.ts=ts',
-    '--loader:.css=css'
+    '--loader:.css=css',
+    '--alias:@=src'
   ].join(' ');
   
   console.log('Running esbuild...');
