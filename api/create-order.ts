@@ -3,9 +3,8 @@ const Razorpay = require('razorpay');
 
 // Ensure this is treated as a serverless function
 export const config = {
-  runtime: "edge"
-}
-
+  runtime: "nodejs"
+};
 // Debug environment variables
 console.log('Environment check:', {
   hasKeyId: !!process.env.RAZORPAY_KEY_ID,
