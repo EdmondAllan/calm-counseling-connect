@@ -3,8 +3,8 @@ const Razorpay = require('razorpay');
 
 // Ensure this is treated as a serverless function
 export const config = {
-  runtime: 'nodejs18.x',
-};
+  runtime: "edge"
+}
 
 // Debug environment variables
 console.log('Environment check:', {
