@@ -35,7 +35,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     res.status(200).json({
       success: true,
-      message: 'WhatsApp link generated successfully',
+      status: 'WhatsApp link generated successfully',
       whatsappUrl: whatsappUrl,
       phoneNumber: phoneNumber,
       message: message,
