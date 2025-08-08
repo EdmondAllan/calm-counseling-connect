@@ -7,7 +7,6 @@ node_modules
 .gitignore
 README*.md
 *.config.js
-tsconfig*.json
 eslint.config.js
 vite.config.ts
 webpack.config.js
