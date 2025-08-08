@@ -3,7 +3,7 @@ const Razorpay = require('razorpay');
 
 // Ensure this is treated as a serverless function
 export const config = {
-  runtime: 'nodejs20.x',
+  runtime: 'nodejs18.x',
 };
 
 // Debug environment variables
