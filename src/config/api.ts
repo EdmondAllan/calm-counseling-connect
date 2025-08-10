@@ -1,45 +1,36 @@
-// API configuration for different environments
-
-// Determine if we're in development or production with proper fallbacks
-const isDevelopment = typeof import.meta !== 'undefined' && 
-                     import.meta.env && 
-                     import.meta.env.MODE === 'development';
-
-// Base URL for API calls
-// In production we may host frontend and serverless API on different domains.
-// Allow overriding via VITE_API_BASE_URL; fall back to relative '/api' for local dev.
-// Helper to detect runtime environment and decide the correct base URL
-function getApiBaseUrl(): string {
-  // 1. Explicit override via env
-  if (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_API_BASE_URL) {
-    return (import.meta.env.VITE_API_BASE_URL as string).replace(/\/$/, '');
-  }
-
-  // 2. Auto-detect custom production domains that are NOT backed by Vercel functions
-  if (typeof window !== 'undefined') {
-    const { hostname } = window.location;
-
-    // If we are on the intellcounseling domain, assume the same domain hosts the
-    // serverless functions on the /api path (custom domain attached to Vercel project).
-    if (hostname.includes('intellcounseling')) {
-      return `https://${hostname}/api`;
-    }
-  }
-
-  // 3. Default – assume same-origin (works for localhost & Vercel previews)
-  return '/api';
-}
-
-export const API_BASE_URL = getApiBaseUrl();
-
-// Razorpay API endpoints
+// config/api.ts
 export const RAZORPAY_ENDPOINTS = {
-  createOrder: `${API_BASE_URL}/create-order`,
-  verifyPayment: `${API_BASE_URL}/verify-payment`,
-  sendWhatsapp: `${API_BASE_URL}/send-whatsapp`
+  createOrder: '/api/create-order',
+  verifyPayment: '/api/verify-payment', 
+  sendWhatsapp: '/api/send-whatsapp'
 };
 
-export default {
-  API_BASE_URL,
-  RAZORPAY_ENDPOINTS
+// Alternative configuration if you need environment-specific URLs
+export const getApiEndpoint = (endpoint: string): string => {
+  const baseUrl = import.meta.env?.VITE_API_BASE_URL || '';
+  return `${baseUrl}${endpoint}`;
+};
+
+// Environment configuration
+export const config = {
+  razorpay: {
+    keyId: import.meta.env?.VITE_RAZORPAY_KEY_ID,
+  },
+  api: {
+    baseUrl: import.meta.env?.VITE_API_BASE_URL || '',
+  }
+};
+
+// Validation function
+export const validateConfig = (): { isValid: boolean; errors: string[] } => {
+  const errors: string[] = [];
+
+  if (!config.razorpay.keyId) {
+    errors.push('VITE_RAZORPAY_KEY_ID is not configured');
+  }
+
+  return {
+    isValid: errors.length === 0,
+    errors
+  };
 };

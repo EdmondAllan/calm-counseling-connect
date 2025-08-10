@@ -1,29 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import { RAZORPAY_ENDPOINTS } from '../config/api';
-
-// Configure axios
-// Don't set a global baseURL as it might affect other requests
-// Remove global Content-Type header to avoid CORS preflight issues
-// axios.defaults.headers.common['Content-Type'] = 'application/json';
-axios.defaults.withCredentials = false; // Set to true if using cookies
-
-// Configure axios for API requests
-const apiClient = axios.create({
-  headers: {
-    'Accept': 'application/json',
-    'Content-Type': 'application/json'
-  },
-  // Add request interceptor for debugging
-  transformRequest: [(data, headers) => {
-    console.log('Request headers being sent:', headers);
-    return JSON.stringify(data);
-  }]
-});
-
-// Define Razorpay API endpoint
-const RAZORPAY_API_URL = 'https://api.razorpay.com/v1/orders';
+import { RAZORPAY_ENDPOINTS, config, validateConfig } from '../config/api';
 
 // Extend Window interface to include Razorpay
 declare global {
@@ -51,14 +28,22 @@ const PaymentGateway: React.FC<PaymentGatewayProps> = ({ bookingData }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Validate configuration on component mount
+  useEffect(() => {
+    const configValidation = validateConfig();
+    if (!configValidation.isValid) {
+      console.error('Configuration errors:', configValidation.errors);
+      setError(`Configuration error: ${configValidation.errors.join(', ')}`);
+    }
+  }, []);
+
   useEffect(() => {
     // Load Razorpay script
     const loadRazorpayScript = () => {
       return new Promise((resolve) => {
-        // Check if script already exists to prevent duplicates
+        // Check if script already exists
         const existingScript = document.querySelector('script[src="https://checkout.razorpay.com/v1/checkout.js"]');
         if (existingScript) {
-          console.log('Razorpay script already exists');
           resolve(true);
           return;
         }
@@ -66,12 +51,8 @@ const PaymentGateway: React.FC<PaymentGatewayProps> = ({ bookingData }) => {
         const script = document.createElement('script');
         script.src = 'https://checkout.razorpay.com/v1/checkout.js';
         script.async = true;
-        script.onload = () => {
-          console.log('Razorpay script loaded successfully');
-          resolve(true);
-        };
+        script.onload = () => resolve(true);
         script.onerror = () => {
-          console.error('Failed to load Razorpay script');
           setError('Failed to load payment gateway');
           resolve(false);
         };
@@ -79,19 +60,34 @@ const PaymentGateway: React.FC<PaymentGatewayProps> = ({ bookingData }) => {
       });
     };
 
-    // Check if Razorpay script is already loaded
     if (!window.Razorpay) {
       loadRazorpayScript();
     }
-
-    return () => {
-      // Safe cleanup - only remove if it exists and is a child of document.body
-      const existingScript = document.querySelector('script[src="https://checkout.razorpay.com/v1/checkout.js"]');
-      if (existingScript && document.body.contains(existingScript)) {
-        document.body.removeChild(existingScript);
-      }
-    };
   }, []);
+
+  const makeApiRequest = async (url: string, data: any): Promise<any> => {
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text().catch(() => '');
+        throw new Error(`API Error ${response.status}: ${response.statusText} ${errorText}`.trim());
+      }
+
+      const result = await response.json();
+      return result;
+    } catch (error: any) {
+      console.error('API Request failed:', error);
+      throw error;
+    }
+  };
 
   const handlePayment = async () => {
     if (isLoading) return;
@@ -107,197 +103,48 @@ const PaymentGateway: React.FC<PaymentGatewayProps> = ({ bookingData }) => {
         throw new Error('Invalid booking data');
       }
 
-      // Create a receipt ID
-      const receiptId = `receipt_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-      const amount = bookingData.fee; // Amount in INR
-      const amountInPaise = Math.round(amount * 100); // Convert to paise for Razorpay
+      // Create order data
+      const orderData = {
+        amount: bookingData.fee, // Amount in INR
+        currency: 'INR',
+        receipt: `receipt_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+        bookingData: bookingData
+      };
 
-      console.log('Creating order with amount:', amountInPaise);
+      console.log('Creating order with data:', orderData);
 
-      // Create order using backend API with environment-aware configuration
-      const apiUrl = RAZORPAY_ENDPOINTS.createOrder;
-      console.log('Sending request to:', apiUrl);
-      let orderResponse;
-      try {
-        // Log the full request details for debugging
-        console.log('Full request details:', {
-          url: apiUrl,
-          method: 'POST',
-          data: {
-            amount: amount,
-            currency: 'INR',
-            receipt: receiptId,
-            bookingData: {
-              clientName: bookingData.clientName,
-              phoneNumber: bookingData.phoneNumber,
-              serviceName: bookingData.serviceName,
-              serviceType: bookingData.serviceType,
-              date: bookingData.date,
-              time: bookingData.time,
-              mode: bookingData.mode,
-              duration: bookingData.duration,
-              fee: bookingData.fee
-            }
-          }
-        });
-        
-        // Use axios with credentials and proper error handling
-        const requestData = {
-          amount: amount,
-          currency: 'INR',
-          receipt: receiptId,
-          bookingData: {
-            clientName: bookingData.clientName,
-            phoneNumber: bookingData.phoneNumber,
-            serviceName: bookingData.serviceName,
-            serviceType: bookingData.serviceType,
-            date: bookingData.date,
-            time: bookingData.time,
-            mode: bookingData.mode,
-            duration: bookingData.duration,
-            fee: bookingData.fee
-          }
-        };
-        
-        // Try axios first with proper error handling
-        try {
-          const axiosResponse = await axios.post(apiUrl, requestData, {
-            headers: {
-              'Content-Type': 'application/json',
-              'Accept': 'application/json'
-            },
-            withCredentials: false
-          });
-          
-          orderResponse = axiosResponse;
-          console.log('Axios API response received:', orderResponse);
-        } catch (axiosError) {
-          console.log('Axios request failed, falling back to fetch');
-          
-          // Fallback to fetch if axios fails
-          const fetchResponse = await fetch(apiUrl, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Accept': 'application/json'
-            },
-            credentials: 'omit', // Don't send cookies to avoid CORS issues
-            body: JSON.stringify(requestData)
-          });
-          
-          if (!fetchResponse.ok) {
-            const fallbackText = await fetchResponse.text().catch(() => '');
-            throw new Error(`HTTP ${fetchResponse.status} ${fetchResponse.statusText || ''} ${fallbackText}`.trim());
-          }
+      // Create order - Use the correct API endpoint
+      const orderResponse = await makeApiRequest(RAZORPAY_ENDPOINTS.createOrder, orderData);
 
-          const responseData = await fetchResponse.json();
-          orderResponse = { data: responseData };
-          console.log('Fetch API response received:', orderResponse);
-        }
-      } catch (apiError: any) {
-        console.error('API request failed:', apiError);
-        const status = apiError.response?.status || (apiError.message.match(/HTTP (\d{3})/)?.[1] ?? 'network');
-        setError(`Unable to reach payment service (status: ${status}). Please try again later.`);
-        setIsLoading(false);
-        return;
+      if (!orderResponse.success || !orderResponse.order) {
+        throw new Error(orderResponse.error || 'Failed to create order');
       }
 
-      if (!orderResponse || !orderResponse.data.success || !orderResponse.data.order) {
-        throw new Error('Failed to create order. Please try again.');
-      }
-
-      const { order } = orderResponse.data;
+      const { order } = orderResponse;
       console.log('Order created successfully:', order);
 
       // Check if Razorpay is loaded
-      if (typeof (window as any).Razorpay === 'undefined') {
+      if (!window.Razorpay) {
         throw new Error('Razorpay not loaded. Please refresh the page and try again.');
       }
 
-      // Check if Razorpay key is configured
-      const razorpayKey = typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_RAZORPAY_KEY_ID;
+      // Get Razorpay key from environment variables
+      const razorpayKey = config.razorpay.keyId;
       if (!razorpayKey) {
         throw new Error('Razorpay key is not configured');
       }
 
-      // Initialize Razorpay with proper order ID from backend
+      // Razorpay options
       const options = {
         key: razorpayKey,
-        amount: order.amount, // Amount from the order
+        amount: order.amount,
         currency: order.currency,
         name: 'Intell Counseling Services',
         description: `${bookingData.serviceName} - ${bookingData.serviceType}`,
-        order_id: order.id, // Order ID from Razorpay
+        order_id: order.id,
         handler: async function (response: any) {
           console.log('Payment successful:', response);
-          try {
-            // Verify payment with backend using environment-aware configuration
-            const verifyUrl = RAZORPAY_ENDPOINTS.verifyPayment;
-            console.log('Sending verification request to:', verifyUrl);
-            
-            // Prepare verification data
-            const verifyData = {
-              razorpay_payment_id: response.razorpay_payment_id,
-              razorpay_order_id: response.razorpay_order_id,
-              razorpay_signature: response.razorpay_signature,
-              bookingData: bookingData
-            };
-            
-            let verificationResponse;
-            
-            // Try axios first with proper error handling
-            try {
-              const axiosVerifyResponse = await axios.post(verifyUrl, verifyData, {
-                headers: {
-                  'Content-Type': 'application/json',
-                  'Accept': 'application/json'
-                },
-                withCredentials: false
-              });
-              
-              verificationResponse = axiosVerifyResponse;
-              console.log('Axios verification response received:', verificationResponse);
-            } catch (axiosError) {
-              console.log('Axios verification request failed, falling back to fetch');
-              
-              // Fallback to fetch if axios fails
-              const fetchVerifyResponse = await fetch(verifyUrl, {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                  'Accept': 'application/json'
-                },
-                credentials: 'omit', // Don't send cookies to avoid CORS issues
-                body: JSON.stringify(verifyData)
-              });
-              
-              if (!fetchVerifyResponse.ok) {
-                const fallbackText = await fetchVerifyResponse.text().catch(() => '');
-                throw new Error(`HTTP ${fetchVerifyResponse.status} ${fetchVerifyResponse.statusText || ''} ${fallbackText}`.trim());
-              }
-              
-              const verificationResponseData = await fetchVerifyResponse.json();
-              verificationResponse = { data: verificationResponseData };
-              console.log('Fetch verification response received:', verificationResponse);
-            }
-
-            if (verificationResponse.data.success) {
-              // Payment verified successfully
-              console.log('Payment verified successfully');
-              
-              // Send WhatsApp notifications
-              await sendWhatsAppNotifications(bookingData);
-              
-              alert('Payment successful! Booking confirmed. Check your WhatsApp for details.');
-              navigate('/booking-success');
-            } else {
-              throw new Error('Payment verification failed');
-            }
-          } catch (error) {
-            console.error('Payment verification error:', error);
-            alert('Payment verification failed. Please contact support.');
-            setIsLoading(false);
-          }
+          await handlePaymentSuccess(response);
         },
         prefill: {
           name: bookingData.clientName,
@@ -315,7 +162,7 @@ const PaymentGateway: React.FC<PaymentGatewayProps> = ({ bookingData }) => {
       };
 
       console.log('Opening Razorpay with options:', options);
-      const rzp = new (window as any).Razorpay(options);
+      const rzp = new window.Razorpay(options);
       rzp.open();
       
     } catch (error: any) {
@@ -325,133 +172,60 @@ const PaymentGateway: React.FC<PaymentGatewayProps> = ({ bookingData }) => {
     }
   };
 
-  const sendWhatsAppNotifications = async (bookingData: any) => {
+  const handlePaymentSuccess = async (response: any) => {
     try {
-      console.log('Sending WhatsApp notifications for booking:', bookingData);
+      // Verify payment with backend
+      const verifyData = {
+        razorpay_payment_id: response.razorpay_payment_id,
+        razorpay_order_id: response.razorpay_order_id,
+        razorpay_signature: response.razorpay_signature,
+        bookingData: bookingData
+      };
+
+      const verificationResponse = await makeApiRequest(RAZORPAY_ENDPOINTS.verifyPayment, verifyData);
+
+      if (verificationResponse.success) {
+        console.log('Payment verified successfully');
+        
+        // Send WhatsApp notifications
+        await sendWhatsAppNotifications();
+        
+        alert('Payment successful! Booking confirmed. Check your WhatsApp for details.');
+        navigate('/booking-success');
+      } else {
+        throw new Error(verificationResponse.error || 'Payment verification failed');
+      }
+    } catch (error: any) {
+      console.error('Payment verification error:', error);
+      alert('Payment verification failed. Please contact support.');
+      setIsLoading(false);
+    }
+  };
+
+  const sendWhatsAppNotifications = async () => {
+    try {
+      console.log('Sending WhatsApp notifications');
       
-      // Send notification to client using environment-aware configuration
-      const whatsappUrl = RAZORPAY_ENDPOINTS.sendWhatsapp;
-      console.log('Sending WhatsApp notification request to:', whatsappUrl);
-      
-      // Prepare client data
-      const clientData = {
+      // Send client notification
+      const clientResponse = await makeApiRequest(RAZORPAY_ENDPOINTS.sendWhatsapp, {
         bookingData: bookingData,
         type: 'client'
-      };
-      
-      // Try to send client notification
-      try {
-        // Try axios first
-        try {
-          const clientAxiosResponse = await axios.post(whatsappUrl, clientData, {
-            headers: {
-              'Content-Type': 'application/json',
-              'Accept': 'application/json'
-            },
-            withCredentials: false
-          });
-          
-          const clientResponse = clientAxiosResponse;
-          console.log('Client WhatsApp notification sent successfully via axios');
-          
-          if (clientResponse.data.success && clientResponse.data.whatsappUrl) {
-            window.open(clientResponse.data.whatsappUrl, '_blank');
-          }
-        } catch (axiosError) {
-          // Fallback to fetch
-          console.log('Axios client notification failed, falling back to fetch');
-          
-          const clientFetchResponse = await fetch(whatsappUrl, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Accept': 'application/json'
-            },
-            credentials: 'omit',
-            body: JSON.stringify(clientData)
-          });
-          
-          if (!clientFetchResponse.ok) {
-            console.error('Client WhatsApp notification failed with status:', clientFetchResponse.status);
-            console.error('Client WhatsApp notification status text:', clientFetchResponse.statusText);
-          } else {
-            const clientResponseData = await clientFetchResponse.json();
-            const clientResponse = { data: clientResponseData };
-            
-            if (clientResponse.data.success) {
-              console.log('Client WhatsApp notification sent successfully via fetch');
-              // Open WhatsApp for client if user allows popups
-              if (clientResponse.data.whatsappUrl) {
-                window.open(clientResponse.data.whatsappUrl, '_blank');
-              }
-            }
-          }
-        }
-      } catch (clientError) {
-        console.error('Failed to send client WhatsApp notification:', clientError);
-        // Continue with counselor notification even if client notification fails
+      });
+
+      if (clientResponse.success && clientResponse.whatsappUrl) {
+        window.open(clientResponse.whatsappUrl, '_blank');
       }
-      
-      // Send notification to counselor
-      const counselorData = {
+
+      // Send counselor notification
+      const counselorResponse = await makeApiRequest(RAZORPAY_ENDPOINTS.sendWhatsapp, {
         bookingData: bookingData,
         type: 'counselor'
-      };
-      
-      // Try to send counselor notification
-      try {
-        // Try axios first
-        try {
-          const counselorAxiosResponse = await axios.post(whatsappUrl, counselorData, {
-            headers: {
-              'Content-Type': 'application/json',
-              'Accept': 'application/json'
-            },
-            withCredentials: false
-          });
-          
-          const counselorResponse = counselorAxiosResponse;
-          console.log('Counselor WhatsApp notification sent successfully via axios');
-          
-          if (counselorResponse.data.success && counselorResponse.data.whatsappUrl) {
-            setTimeout(() => {
-              window.open(counselorResponse.data.whatsappUrl, '_blank');
-            }, 1000);
-          }
-        } catch (axiosError) {
-          // Fallback to fetch
-          console.log('Axios counselor notification failed, falling back to fetch');
-          
-          const counselorFetchResponse = await fetch(whatsappUrl, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Accept': 'application/json'
-            },
-            credentials: 'omit',
-            body: JSON.stringify(counselorData)
-          });
-          
-          if (!counselorFetchResponse.ok) {
-            console.error('Counselor WhatsApp notification failed with status:', counselorFetchResponse.status);
-            console.error('Counselor WhatsApp notification status text:', counselorFetchResponse.statusText);
-          } else {
-            const counselorResponseData = await counselorFetchResponse.json();
-            const counselorResponse = { data: counselorResponseData };
-            
-            if (counselorResponse.data.success) {
-              console.log('Counselor WhatsApp notification sent successfully via fetch');
-              // Open WhatsApp for counselor if user allows popups
-              if (counselorResponse.data.whatsappUrl) {
-                setTimeout(() => {
-                  window.open(counselorResponse.data.whatsappUrl, '_blank');
-                }, 1000);
-              }
-            }
-          }
-        }
-      } catch (counselorError) {
-        console.error('Failed to send counselor WhatsApp notification:', counselorError);
+      });
+
+      if (counselorResponse.success && counselorResponse.whatsappUrl) {
+        setTimeout(() => {
+          window.open(counselorResponse.whatsappUrl, '_blank');
+        }, 1000);
       }
       
     } catch (error) {
@@ -460,14 +234,19 @@ const PaymentGateway: React.FC<PaymentGatewayProps> = ({ bookingData }) => {
     }
   };
 
+  const handleRetry = () => {
+    setError(null);
+    handlePayment();
+  };
+
   if (error) {
     return (
       <div className="payment-gateway">
         <div className="text-red-600 mb-4 p-3 bg-red-50 rounded-lg">
-          Error: {error}
+          <strong>Error:</strong> {error}
         </div>
         <button
-          onClick={handlePayment}
+          onClick={handleRetry}
           className="confirm-pay-btn"
           style={{
             background: 'linear-gradient(135deg, #2C67B2, #7B42F4)',
@@ -494,7 +273,9 @@ const PaymentGateway: React.FC<PaymentGatewayProps> = ({ bookingData }) => {
         disabled={isLoading}
         className="confirm-pay-btn"
         style={{
-          background: 'linear-gradient(135deg, #2C67B2, #7B42F4)',
+          background: isLoading 
+            ? 'linear-gradient(135deg, #9CA3AF, #6B7280)' 
+            : 'linear-gradient(135deg, #2C67B2, #7B42F4)',
           color: 'white',
           border: 'none',
           padding: '15px 30px',
