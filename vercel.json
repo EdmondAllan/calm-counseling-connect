@@ -1,7 +1,7 @@
 {
   "builds": [
     {
-      "src": "api/**/*.ts",
+      "src": "functions/**/*.ts",
       "use": "@vercel/node"
     },
     {
@@ -11,7 +11,7 @@
     }
   ],
   "functions": {
-    "api/**/*.ts": {
+    "functions/**/*.ts": {
       "runtime": "nodejs18.x"
     }
   },

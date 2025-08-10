@@ -13,8 +13,8 @@ console.log('🔍 Checking deployment configuration...\n');
 // Check if required files exist
 const requiredFiles = [
   'vercel.json',
-  'api/create-order.ts',
-  'api/package.json',
+  'functions/create-order.ts',
+  'functions/package.json',
   'package.json'
 ];
 
@@ -32,9 +32,9 @@ requiredFiles.forEach(file => {
 
 // Check API directory structure
 console.log('\n📁 API Directory Structure:');
-const apiDir = path.join(__dirname, 'api');
-if (fs.existsSync(apiDir)) {
-  const apiFiles = fs.readdirSync(apiDir);
+const functionsDir = path.join(__dirname, 'functions');
+if (fs.existsSync(functionsDir)) {
+  const apiFiles = fs.readdirSync(functionsDir);
   apiFiles.forEach(file => {
     console.log(`   - ${file}`);
   });

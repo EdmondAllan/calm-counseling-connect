@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-const Razorpay = require('razorpay');
+import Razorpay from 'razorpay';
 
 export const config = {
   runtime: 'nodejs18.x'
