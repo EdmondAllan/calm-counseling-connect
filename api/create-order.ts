@@ -1,9 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 const Razorpay = require('razorpay');
 
-export const config = {
-  runtime: 'nodejs18.x'
-};
 // Debug env variables
 console.log('Environment check:', {
   hasKeyId: !!process.env.RAZORPAY_KEY_ID,
