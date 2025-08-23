@@ -268,6 +268,7 @@ const PaymentGateway: React.FC<PaymentGatewayProps> = ({ bookingData }) => {
 
   return (
     <div className="payment-gateway">
+      {/* COMMENTED OUT: Original custom payment button implementation
       <button
         onClick={handlePayment}
         disabled={isLoading}
@@ -289,6 +290,16 @@ const PaymentGateway: React.FC<PaymentGatewayProps> = ({ bookingData }) => {
       >
         {isLoading ? 'Processing...' : 'Confirm & Pay'}
       </button>
+      */}
+      
+      {/* NEW: Razorpay Payment Button */}
+      <form>
+        <script 
+          src="https://checkout.razorpay.com/v1/payment-button.js" 
+          data-payment_button_id="pl_R8gQXksHlw6NEL" 
+          async
+        />
+      </form>
     </div>
   );
 };
