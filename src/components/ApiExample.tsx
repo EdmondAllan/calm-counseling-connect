@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+// import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { 
@@ -46,31 +46,31 @@ const ApiExample = () => {
 
   if (!isAuthenticated) {
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle>API Integration Example</CardTitle>
-          <CardDescription>Please log in to see the API integration in action</CardDescription>
-        </CardHeader>
-        <CardContent>
+      <div className="rounded-lg border bg-card text-card-foreground shadow-sm">
+        <div className="flex flex-col space-y-1.5 p-6">
+          <h3 className="text-2xl font-semibold leading-none tracking-tight">API Integration Example</h3>
+          <p className="text-sm text-muted-foreground">Please log in to see the API integration in action</p>
+        </div>
+        <div className="p-6 pt-0">
           <p className="text-muted-foreground">
             This component demonstrates how the frontend connects to the backend API.
             Log in to see real data from the database.
           </p>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     );
   }
 
   return (
     <div className="space-y-6">
-      <Card>
-        <CardHeader>
-          <CardTitle>API Integration Example</CardTitle>
-          <CardDescription>
+      <div className="rounded-lg border bg-card text-card-foreground shadow-sm">
+        <div className="flex flex-col space-y-1.5 p-6">
+          <h3 className="text-2xl font-semibold leading-none tracking-tight">API Integration Example</h3>
+          <p className="text-sm text-muted-foreground">
             Welcome, {user?.name}! This demonstrates the frontend-backend connection.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
+          </p>
+        </div>
+        <div className="p-6 pt-0 space-y-4">
           {/* Services Section */}
           <div>
             <h3 className="text-lg font-semibold mb-2">Available Services</h3>
@@ -166,8 +166,8 @@ const ApiExample = () => {
               This will create a test appointment for 7 days from now
             </p>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 };

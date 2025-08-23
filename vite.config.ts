@@ -41,9 +41,15 @@ export default defineConfig(({ mode }) => ({
     minify: 'esbuild',
     rollupOptions: {
       external: [],
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom'],
+          ui: ['@radix-ui/react-accordion', '@radix-ui/react-alert-dialog', '@radix-ui/react-avatar']
+        }
+      }
     },
     commonjsOptions: {
-      include: []
+      include: [/node_modules/]
     }
   },
   optimizeDeps: {

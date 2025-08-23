@@ -1,5 +1,4 @@
-
-import { Card, CardContent } from "@/components/ui/card";
+// import { Card, CardContent } from "@/components/ui/card";
 
 const FounderProfile = () => {
   return (
@@ -11,8 +10,8 @@ const FounderProfile = () => {
           </h2>
           <div className="w-24 h-1 bg-[#25D366] mx-auto"></div>
         </div>
-        <Card className="max-w-5xl mx-auto bg-white shadow-xl rounded-3xl overflow-visible">
-          <CardContent className="p-8 md:p-12">
+        <div className="max-w-5xl mx-auto bg-white shadow-xl rounded-3xl overflow-visible rounded-lg border bg-card text-card-foreground shadow-sm">
+          <div className="p-8 md:p-12">
             <div className="flex flex-col md:flex-row items-center gap-12">
               {/* Left Section: Info */}
               <div className="flex-1 min-w-0">
@@ -65,8 +64,8 @@ const FounderProfile = () => {
                 </div>
               </div>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </div>
     </section>
   );

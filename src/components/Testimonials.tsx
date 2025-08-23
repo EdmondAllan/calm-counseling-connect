@@ -1,4 +1,4 @@
-import { Card, CardContent } from "@/components/ui/card";
+// import { Card, CardContent } from "@/components/ui/card";
 
 const testimonial1 = {
   quote: "The counseling sessions have transformed my approach to parenting. I now have a much better relationship with my teenager.",
@@ -30,8 +30,8 @@ const Testimonials = () => {
           <div className="py-12 animate-marquee group-hover:paused flex">
             {[...testimonials, ...testimonials].map((testimonial, index) => (
               <div key={index} className="mx-4" style={{ minWidth: '320px' }}>
-                <Card className="h-full">
-                  <CardContent className="p-6 flex flex-col h-full">
+                <div className="h-full rounded-lg border bg-card text-card-foreground shadow-sm">
+                  <div className="p-6 flex flex-col h-full">
                     <div className="flex-grow">
                       <svg className="h-8 w-8 text-intell-purple mb-4" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
@@ -39,8 +39,8 @@ const Testimonials = () => {
                       <p className="text-gray-700 mb-4 italic">{testimonial.quote}</p>
                     </div>
                     <p className="text-right font-medium text-intell-blue">{testimonial.author}</p>
-                  </CardContent>
-                </Card>
+                  </div>
+                </div>
               </div>
             ))}
           </div>

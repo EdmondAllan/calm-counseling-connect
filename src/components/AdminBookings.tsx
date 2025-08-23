@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+// import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 
 interface Booking {
@@ -44,17 +44,17 @@ const AdminBookings = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-2xl text-intell-blue">All Bookings</CardTitle>
-        </CardHeader>
-        <CardContent>
+      <div className="rounded-lg border bg-card text-card-foreground shadow-sm">
+        <div className="flex flex-col space-y-1.5 p-6">
+          <h3 className="text-2xl font-semibold leading-none tracking-tight text-intell-blue">All Bookings</h3>
+        </div>
+        <div className="p-6 pt-0">
           {bookings.length === 0 ? (
             <div className="text-center py-8 text-gray-500">No bookings found</div>
           ) : (
             <div className="space-y-4">
               {bookings.map((booking) => (
-                <Card key={booking._id} className="p-4">
+                <div key={booking._id} className="p-4 rounded-lg border bg-card text-card-foreground shadow-sm">
                   <div className="flex justify-between items-start">
                     <div className="flex-1">
                       <div className="flex items-center gap-4 mb-2">
@@ -73,14 +73,14 @@ const AdminBookings = () => {
                       </div>
                     </div>
                   </div>
-                </Card>
+                </div>
               ))}
             </div>
           )}
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 };
 
-export default AdminBookings; 
+export default AdminBookings;
