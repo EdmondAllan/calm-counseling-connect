@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { Check } from "lucide-react";
-import FounderProfile from "@/components/FounderProfile";
+import FounderProfile from "../components/FounderProfile";
 
 const containerVariants = {
   hidden: { opacity: 0 },
