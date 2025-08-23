@@ -1,7 +1,7 @@
 import React from 'react';
 // import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+// import { Badge } from '@/components/ui/badge';
 import { 
   useGetServicesQuery, 
   useGetCounselorsQuery, 
@@ -84,9 +84,9 @@ const ApiExample = () => {
                   <div key={service._id} className="p-3 border rounded-lg">
                     <h4 className="font-medium">{service.name}</h4>
                     <p className="text-sm text-muted-foreground">{service.description}</p>
-                    <Badge variant="secondary" className="mt-1">
+                    <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80 mt-1">
                       ${service.price}
-                    </Badge>
+                    </span>
                   </div>
                 ))}
               </div>
@@ -106,9 +106,9 @@ const ApiExample = () => {
                   <div key={counselor._id} className="p-3 border rounded-lg">
                     <h4 className="font-medium">{counselor.name}</h4>
                     <p className="text-sm text-muted-foreground">{counselor.specialization}</p>
-                    <Badge variant="outline" className="mt-1">
+                    <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent hover:bg-accent hover:text-accent-foreground mt-1">
                       {counselor.experience} years exp.
-                    </Badge>
+                    </span>
                   </div>
                 ))}
               </div>
@@ -136,13 +136,13 @@ const ApiExample = () => {
                             {appointment.date} at {appointment.time}
                           </p>
                         </div>
-                        <Badge variant={
-                          appointment.status === 'confirmed' ? 'default' :
-                          appointment.status === 'pending' ? 'secondary' :
-                          appointment.status === 'cancelled' ? 'destructive' : 'outline'
-                        }>
+                        <span className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 ${
+                          appointment.status === 'confirmed' ? 'border-transparent bg-primary text-primary-foreground hover:bg-primary/80' :
+                          appointment.status === 'pending' ? 'border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80' :
+                          appointment.status === 'cancelled' ? 'border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/80' : 'border-transparent hover:bg-accent hover:text-accent-foreground'
+                        }`}>
                           {appointment.status}
-                        </Badge>
+                        </span>
                       </div>
                     </div>
                   ))

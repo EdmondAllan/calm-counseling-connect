@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 // import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+// import { Badge } from '@/components/ui/badge';
 
 interface Booking {
   _id: string;
@@ -59,7 +59,7 @@ const AdminBookings = () => {
                     <div className="flex-1">
                       <div className="flex items-center gap-4 mb-2">
                         <h3 className="font-semibold text-lg">{booking.name}</h3>
-                        <Badge variant="outline">{booking.status}</Badge>
+                        <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80">{booking.status}</span>
                       </div>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-gray-600">
                         <p><strong>Email:</strong> {booking.email}</p>
