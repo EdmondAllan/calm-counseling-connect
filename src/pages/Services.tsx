@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Users, BrainCircuit, HeartHandshake, Star, UserRound, Waypoints, Leaf, Globe } from 'lucide-react';
+import { Users, BrainCircuit, HeartHandshake, Star, User, MapPin, Leaf, Globe } from 'lucide-react';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -62,7 +62,7 @@ const servicesData = [
     title: "Adolescent Well-being Counselling",
     description: "Support teenagers through the unique challenges of adolescence and personal development.",
     details: "Our adolescent counseling provides a confidential space for teenagers to express themselves, develop emotional regulation skills, navigate peer relationships, build identity and self-esteem, and address specific challenges such as academic pressure, social media, and family dynamics.",
-    Icon: UserRound,
+    Icon: User,
     gradient: "from-teal-400 to-teal-600",
   },
   {
@@ -70,7 +70,7 @@ const servicesData = [
     title: "Guidance for Life Transitions",
     description: "Navigate major life changes with confidence and clarity through professional support.",
     details: "Our life transition counseling helps you adapt to significant changes such as career shifts, relocation, relationship changes, becoming a parent, or retirement. We provide emotional support and practical strategies to help you embrace new beginnings with confidence and resilience.",
-    Icon: Waypoints,
+    Icon: MapPin,
     gradient: "from-cyan-400 to-cyan-600",
   },
   {
