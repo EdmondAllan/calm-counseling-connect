@@ -29,7 +29,7 @@ import {
 // import { Calendar } from "@/components/ui/calendar"
 import { format } from "date-fns"
 // import Stepper from "@/components/ui/stepper"
-import PaymentGateway from "@/components/PaymentGateway.tsx"
+import PaymentGateway from "@/components/PaymentGateway"
 
 declare global {
   interface Window {
