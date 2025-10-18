@@ -1,23 +1,26 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Lato:wght@400;700&display=swap');
-
-/* Tailwind CSS directives - IDE warnings are normal and don't affect functionality */
+/* Tailwind CSS directives - MUST be first */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* CSS Reset and debugging */
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-html, body {
-  height: 100%;
-  overflow-x: hidden;
-}
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Lato:wght@400;700&display=swap');
 
 @layer base {
+  * {
+    box-sizing: border-box;
+  }
+  
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow-x: hidden;
+  }
+  
+  #root {
+    min-height: 100vh;
+  }
+  
   :root {
     --background: 210 40% 98%;
     --foreground: 222.2 84% 4.9%;
@@ -116,5 +119,13 @@ html, body {
 @layer components {
   .test-tailwind {
     @apply bg-blue-500 text-white p-4 rounded;
+  }
+  
+  /* Force basic styles if Tailwind fails */
+  .fallback-styles {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+    padding: 1rem !important;
+    margin: 0 !important;
   }
 }

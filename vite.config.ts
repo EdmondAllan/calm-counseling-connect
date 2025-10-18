@@ -33,6 +33,7 @@ export default defineConfig(({ mode }) => ({
   ],
   css: {
     postcss: './postcss.config.js',
+    devSourcemap: true,
   },
   resolve: {
     alias: {

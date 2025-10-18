@@ -26,8 +26,8 @@ const Hero = () => {
   };
 
   return (
-    <div className="bg-white">
-      <div className="container mx-auto px-4 py-16 md:py-24">
+    <section className="relative bg-white min-h-screen flex items-center">
+      <div className="container mx-auto px-4 py-16 md:py-24 w-full">
         <motion.div
           className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center"
           variants={containerVariants}
@@ -79,7 +79,7 @@ const Hero = () => {
           </motion.div>
         </motion.div>
       </div>
-    </div>
+    </section>
   );
 };
 
