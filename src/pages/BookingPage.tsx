@@ -183,7 +183,6 @@ const BookingPage = () => {
     email: false,
     phone: false,
   })
-  const [isDatePickerOpen, setIsDatePickerOpen] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -210,12 +209,7 @@ const BookingPage = () => {
   }
 
   const handleDateSelect = (date: Date | undefined) => {
-    handleSelectChange("date", date ? format(date, "yyyy-MM-dd") : "")
     setBooking(prev => ({ ...prev, date: date }))
-    // Close the date picker with a slight delay for smooth animation
-    setTimeout(() => {
-      setIsDatePickerOpen(false)
-    }, 150)
   }
   
   const handleNext = () => {
@@ -390,44 +384,61 @@ const BookingPage = () => {
                     <h2 className="text-3xl font-bold text-center text-gray-800 mt-8">Session Details</h2>
                     <p className="text-center text-gray-500 mt-2 mb-8">Let's schedule your counseling session</p>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      {/* <Select onValueChange={value => handleSelectChange("counselingType", value)} value={booking.counselingType}>
-                        <SelectTrigger className="w-full pl-4 pr-4 py-3 h-auto bg-gray-50 border-gray-200 rounded-lg text-base">
-                          <SelectValue placeholder="Type of Counseling *" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {counselingTypes.map(item => (
-                            <SelectItem key={item.id} value={item.id}>
-                              <div className="flex items-center gap-2">
-                                <item.icon className="w-4 h-4" /> {item.name}
-                              </div>
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select> */}
-
-                      {/* <Popover open={isDatePickerOpen} onOpenChange={setIsDatePickerOpen}>
-                        <PopoverTrigger asChild>
-                          <button className="w-full h-auto text-left flex items-center gap-2 pl-4 pr-3 py-3 bg-gray-50 border border-gray-200 rounded-lg text-base">
-                            <CalendarIcon className="w-4 h-4 mr-2" />
-                            {booking.date ? format(booking.date, "PPP") : <span>Pick a date *</span>}
-                          </button>
-                        </PopoverTrigger>
-                        <PopoverContent 
-                          className="w-auto p-0" 
-                          align="start"
-                          style={{
-                            animation: `fadeOut ${isDatePickerOpen ? 0 : 0.2}s ease-out forwards`
-                          }}
+                      {/* Custom Counseling Type Dropdown */}
+                      <div className="relative">
+                        <select
+                          value={booking.counselingType}
+                          onChange={(e) => handleSelectChange("counselingType", e.target.value)}
+                          className={`w-full pl-4 pr-10 py-3 bg-gray-50 border rounded-lg text-base focus:ring-2 focus:outline-none appearance-none transition-all duration-200 ${
+                            booking.counselingType 
+                              ? 'border-green-500 focus:ring-green-400 focus:border-green-400' 
+                              : 'border-gray-200 focus:ring-blue-400 focus:border-blue-400'
+                          }`}
                         >
-                          <Calendar
-                            mode="single"
-                            selected={booking.date}
-                            onSelect={handleDateSelect}
-                            initialFocus
-                            disabled={{ before: new Date() }}
-                          />
-                        </PopoverContent>
-                      </Popover> */}
+                          <option value="">Type of Counseling *</option>
+                          {counselingTypes.map(item => (
+                            <option key={item.id} value={item.id}>
+                              {item.name}
+                            </option>
+                          ))}
+                        </select>
+                        <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                          {booking.counselingType ? (
+                            <Check className="w-5 h-5 text-green-500" />
+                          ) : (
+                            <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                            </svg>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Custom Date Picker */}
+                      <div className="relative">
+                        <input
+                          type="date"
+                          value={booking.date ? (typeof booking.date === 'string' ? booking.date : format(booking.date, "yyyy-MM-dd")) : ''}
+                          onChange={(e) => {
+                            const selectedDate = e.target.value ? new Date(e.target.value) : undefined;
+                            handleDateSelect(selectedDate);
+                          }}
+                          min={format(new Date(), "yyyy-MM-dd")}
+                          placeholder="Pick a date *"
+                          className={`w-full pl-12 pr-10 py-3 bg-gray-50 border rounded-lg text-base focus:ring-2 focus:outline-none transition-all duration-200 ${
+                            booking.date 
+                              ? 'border-green-500 focus:ring-green-400 focus:border-green-400' 
+                              : 'border-gray-200 focus:ring-blue-400 focus:border-blue-400'
+                          }`}
+                        />
+                        <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                          <CalendarIcon className="w-5 h-5 text-gray-400" />
+                        </div>
+                        {booking.date && (
+                          <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                            <Check className="w-5 h-5 text-green-500" />
+                          </div>
+                        )}
+                      </div>
                     </div>
                     <div className="mt-6">
                       <p className="font-semibold mb-3 text-center">Select a time slot *</p>

@@ -31,6 +31,9 @@ export default defineConfig(({ mode }) => ({
     react()
     // Removed componentTagger(),
   ],
+  css: {
+    postcss: './postcss.config.js',
+  },
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),

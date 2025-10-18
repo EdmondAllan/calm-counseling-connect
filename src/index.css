@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Lato:wght@400;700&display=swap');
 
+/* Tailwind CSS directives - IDE warnings are normal and don't affect functionality */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -77,10 +78,11 @@
   }
 
   * {
-    @apply border-border;
+    border-color: hsl(var(--border));
   }
   body {
-    @apply bg-background text-foreground;
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
     font-feature-settings: "rlig" 1, "calt" 1;
     font-family: 'Lato', sans-serif;
     font-size: 18px;
@@ -95,5 +97,12 @@
   .text-balance {
     text-wrap: balance;
     transition: linear;
+  }
+}
+
+/* Test to verify Tailwind is working - this should be processed by PostCSS */
+@layer components {
+  .test-tailwind {
+    @apply bg-blue-500 text-white p-4 rounded;
   }
 }
