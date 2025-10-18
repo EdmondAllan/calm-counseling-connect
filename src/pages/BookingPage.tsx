@@ -1,5 +1,3 @@
-"use client"
-
 import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import {
@@ -31,7 +29,7 @@ import {
 // import { Calendar } from "@/components/ui/calendar"
 import { format } from "date-fns"
 // import Stepper from "@/components/ui/stepper"
-import PaymentGateway from "@/components/PaymentGateway"
+import PaymentGateway from "@/components/PaymentGateway.tsx"
 
 declare global {
   interface Window {
