@@ -29,7 +29,6 @@ export default defineConfig(({ mode }) => ({
   },
   plugins: [
     react()
-    // Removed componentTagger(),
   ],
   css: {
     postcss: './postcss.config.js',
@@ -69,6 +68,7 @@ export default defineConfig(({ mode }) => ({
     'process.env.VITE_SKIP_NATIVE': 'true'
   },
   esbuild: {
-    target: 'es2020'
+    target: 'es2020',
+    jsx: 'automatic'
   }
 }));
