@@ -1,0 +1,86 @@
+import type { VercelRequest, VercelResponse } from '@vercel/node';
+
+export default async function handler(req: VercelRequest, res: VercelResponse) {
+  // Set CORS headers
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
+  res.setHeader('Access-Control-Allow-Headers', 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Origin, Authorization');
+  res.setHeader('Access-Control-Max-Age', '86400');
+
+  // Handle OPTIONS request for CORS preflight
+  if (req.method === 'OPTIONS') {
+    console.log('Handling OPTIONS request in send-whatsapp');
+    return res.status(200).end();
+  }
+  
+  // Log the request method and headers for debugging
+  console.log('Request method in send-whatsapp:', req.method);
+  console.log('Request headers in send-whatsapp:', req.headers);
+  
+  if (req.method !== 'POST') {
+    console.log('Method not allowed in send-whatsapp:', req.method);
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
+
+  try {
+    const { bookingData, type } = req.body;
+
+    const message = generateBookingMessage(bookingData, type);
+    const phoneNumber = type === 'client' ? bookingData.phoneNumber : '+919488991905'; // Counselor's number
+
+    // For free WhatsApp Business App approach
+    // This will generate a WhatsApp link that opens the app with pre-filled message
+    const whatsappUrl = `https://wa.me/${phoneNumber.replace('+', '')}?text=${encodeURIComponent(message)}`;
+
+    res.status(200).json({
+      success: true,
+      status: 'WhatsApp link generated successfully',
+      whatsappUrl: whatsappUrl,
+      phoneNumber: phoneNumber,
+      message: message,
+    });
+  } catch (error) {
+    console.error('Error generating WhatsApp link:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to generate WhatsApp link',
+    });
+  }
+}
+
+function generateBookingMessage(bookingData: any, type: string): string {
+  const baseMessage = `🎉 *Booking Confirmed!*
+
+📋 *Booking Details:*
+👤 Client: ${bookingData.clientName}
+📞 Phone: ${bookingData.phoneNumber}
+🏥 Service: ${bookingData.serviceName} - ${bookingData.serviceType}
+📅 Date: ${bookingData.date}
+⏰ Time: ${bookingData.time}
+📍 Mode: ${bookingData.mode}
+⏱️ Duration: ${bookingData.duration}
+💰 Fee: ₹${bookingData.fee}
+
+📝 *Important Notes:*
+• Please arrive 10 minutes early
+• Session is non-refundable
+• Contact us for any changes
+
+📞 Need help? Call: +91 9488991905
+
+Thank you for choosing Intell Counseling Services! 🙏`;
+
+  if (type === 'counselor') {
+    return `🔔 *New Booking Alert!*
+
+${baseMessage}
+
+📊 *Counselor Action Required:*
+• Review booking details
+• Prepare for session
+• Contact client if needed`;
+  }
+
+  return baseMessage;
+}
